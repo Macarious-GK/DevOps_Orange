@@ -1,7 +1,7 @@
 # Use the official Prometheus image as the base
 FROM prom/prometheus:latest
 
-# Set the working directory
+# Set the working directory 
 WORKDIR /etc/prometheus
 
 # Copy Prometheus configuration file
