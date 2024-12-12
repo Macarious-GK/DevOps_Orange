@@ -1,0 +1,38 @@
+# Use the official Prometheus image as the base
+FROM prom/prometheus:latest
+
+# Set the working directory
+WORKDIR /etc/prometheus
+
+# Copy Prometheus configuration file
+COPY prometheus.yml /etc/prometheus/prometheus.yml
+
+# Copy any additional rules (optional)
+COPY alert_rules.yml /etc/prometheus/alert_rules.yml
+
+# Expose Prometheus default port
+EXPOSE 9090
+
+# Start Prometheus
+CMD [ "--config.file=/etc/prometheus/prometheus.yml"]
+
+
+
+# -------
+
+    # Use the official Alertmanager image as the base
+# FROM prom/alertmanager:latest
+
+# # Set the working directory
+# WORKDIR /etc/alertmanager
+
+# # Copy Alertmanager configuration file
+# COPY alertmanager.yml /etc/alertmanager/alertmanager.yml
+
+# # Expose Alertmanager default port
+# EXPOSE 9093
+
+# # Start Alertmanager
+# CMD [ "--config.file=/etc/alertmanager/alertmanager.yml" ]
+
+
