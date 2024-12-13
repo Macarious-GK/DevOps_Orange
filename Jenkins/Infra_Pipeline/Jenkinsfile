@@ -19,7 +19,7 @@ pipeline {
                         // // Set the correct permissions for the private key file
                         // sh 'chmod 600 /tmp/ansible_private_key'
                         // Run the playbook with the private key file
-                        sh 'ansible-playbook -i Inventory/inventory.ini --private-key=/tmp/ansible_private_key Playbooks/ping_check.yml'
+                        sh 'ansible-playbook -i Inventory/inventory.ini --private-key=$ANSIBLE_PRIVATE_KEY Playbooks/ping_check.yml'
                     }
                 }
             }
