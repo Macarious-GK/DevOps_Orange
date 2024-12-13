@@ -14,7 +14,7 @@ pipeline {
                 script {
                     dir('Ansible/') {
                         // Run the Ansible playbook
-                        sh 'sudo ansible-playbook -i Inventory/inventory.ini Playbooks/ping_check.yml'
+                        sh ' ansible-playbook -i Inventory/inventory.ini Playbooks/ping_check.yml'
                     }
                 }
             }
