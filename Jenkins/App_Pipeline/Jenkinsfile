@@ -58,9 +58,9 @@ pipeline {
                     dir('Ansible') {
                         echo "Deploying on Machine 1"
                         ansiblePlaybook(
-                            credentialsId: "${params.CREDENTIALS_ID_2}",
+                            credentialsId: "${params.CREDENTIALS_ID_1}",
                             installation: "${env.ANSIBLE_VERSION}",
-                            inventory: "${params.INVENTORY_FILE2}",
+                            inventory: "${params.INVENTORY_FILE1}",
                             playbook: "${params.PLAYBOOK_PULL_RUN_DockerImages}"
                         )
                         echo "Deployment done on Machine 2"
