@@ -6,7 +6,9 @@ pipeline {
     }
 
     parameters {
-        string(name: 'PLAYBOOK', defaultValue: 'Playbooks/ping_check.yml', description: 'Path to the Ansible playbook')
+        string(name: 'PLAYBOOK', defaultValue: 'Playbooks/ping_check.yml', description: 'Ping Check Playbook')
+        string(name: 'PLAYBOOK_Docker_Install', defaultValue: 'Playbooks/Ansible_Install_docker_Playbook.yml', description: 'Docker Installation Playbook')
+
         string(name: 'INVENTORY_FILE1', defaultValue: 'Inventory/inventory.ini', description: 'Path to the first inventory file')
         string(name: 'INVENTORY_FILE2', defaultValue: 'Inventory/inventory_2.ini', description: 'Path to the second inventory file')
         credentials(name: 'CREDENTIALS_ID_1', description: 'Credentials ID for Machine 1', defaultValue: 'Ansible_Target_Machine_M1')
@@ -20,28 +22,19 @@ pipeline {
                 sh 'ansible --version'
             }
         }
-
-        stage('Run Ansible Playbook for Machine 1') {
+        stage('Test: Ping Machines') {
             steps {
                 script {
-                    echo "Running Ansible Playbook for Machine 1 using inventory: ${params.INVENTORY_FILE1}"
+                    echo "Start Testing Ping on Machines"
                     dir('Ansible') {
+                        // Machine 1
                         ansiblePlaybook(
                             credentialsId: "${params.CREDENTIALS_ID_1}",
                             installation: "${env.ANSIBLE_VERSION}",
                             inventory: "${params.INVENTORY_FILE1}",
                             playbook: "${params.PLAYBOOK}"
                         )
-                    }
-                }
-            }
-        }
-
-        stage('Run Ansible Playbook for Machine 2') {
-            steps {
-                script {
-                    echo "Running Ansible Playbook for Machine 2 using inventory: ${params.INVENTORY_FILE2}"
-                    dir('Ansible') {
+                        // Machine 2
                         ansiblePlaybook(
                             credentialsId: "${params.CREDENTIALS_ID_2}",
                             installation: "${env.ANSIBLE_VERSION}",
@@ -49,6 +42,42 @@ pipeline {
                             playbook: "${params.PLAYBOOK}"
                         )
                     }
+                }
+            }
+        }
+
+
+
+        stage('Install Docker on Machine 1') {
+            steps {
+                script {
+                    echo "Installing Docker on Machine 1"
+                    dir('Ansible') {
+                        ansiblePlaybook(
+                            credentialsId: "${params.CREDENTIALS_ID_1}",
+                            installation: "${env.ANSIBLE_VERSION}",
+                            inventory: "${params.INVENTORY_FILE1}",
+                            playbook: "${params.PLAYBOOK_Docker_Install}"
+                        )
+                    }
+                    echo "Docker Installed on Machine 1"
+                }
+            }
+        }
+
+        stage('Install Docker on Machine 2') {
+            steps {
+                script {
+                    echo "Installing Docker on Machine 2"
+                    dir('Ansible') {
+                        ansiblePlaybook(
+                            credentialsId: "${params.CREDENTIALS_ID_2}",
+                            installation: "${env.ANSIBLE_VERSION}",
+                            inventory: "${params.INVENTORY_FILE2}",
+                            playbook: "${params.PLAYBOOK_Docker_Install}"
+                        )
+                    }
+                    echo "Docker Installed on Machine 2"
                 }
             }
         }

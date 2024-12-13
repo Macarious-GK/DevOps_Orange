@@ -41,11 +41,22 @@
       ansible.builtin.wait_for_connection:
         timeout: 300
 
-    - name: Pull Docker image using shell command
+    - name: Verify Docker installation
       ansible.builtin.shell:
-        cmd: docker pull macarious25siv/books:latest
+        cmd: docker --version
+      register: docker_version_check
+      failed_when: docker_version_check.rc != 0
+      changed_when: false
 
-    - name: Run Docker container
+    - name: Run a test container
       ansible.builtin.shell:
-        cmd: docker run -d --name books_container -p 8000:8000 macarious25siv/books:latest
+        cmd: docker run --rm hello-world
+      register: docker_test_container
+      failed_when: docker_test_container.rc != 0
+      changed_when: false
 
+    - name: Print Docker verification results
+      debug:
+        msg:
+          - "Docker Version: {{ docker_version_check.stdout }}"
+          - "Test Container Output: {{ docker_test_container.stdout }}"

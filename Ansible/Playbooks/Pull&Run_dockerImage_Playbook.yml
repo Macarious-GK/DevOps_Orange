@@ -1,0 +1,20 @@
+---
+- name: Install Docker, reboot, and deploy container
+  hosts: target_group
+  become: true
+  vars:
+
+    docker_image: "macarious25siv/books:latest"
+    docker_container_name: "books_container"
+    docker_container_port: "8000"
+
+  tasks:
+
+    - name: Pull Docker image using shell command
+      ansible.builtin.shell:
+        cmd: docker pull {{ docker_image }}
+
+    - name: Run Docker container
+      ansible.builtin.shell:
+        cmd: docker run -d --name {{ docker_container_name }} -p {{ docker_container_port }}:8000 macarious25siv/books:latest
+
