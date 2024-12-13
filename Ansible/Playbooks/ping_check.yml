@@ -1,0 +1,6 @@
+---
+- name: Check Connectivity
+  hosts: target_group
+  tasks:
+    - name: Ping the target machine
+      ansible.builtin.ping:
