@@ -13,8 +13,8 @@ pipeline {
             steps {
                 script {
                     dir('Ansible/') {
-                        echo "Private key content: ${ANSIBLE_PRIVATE_KEY}" 
                         // Write the private key to a temporary file
+                        
                         writeFile(file: '/tmp/ansible_private_key', text: ANSIBLE_PRIVATE_KEY)
 
                         // Ensure the private key file has the correct permissions
@@ -23,7 +23,7 @@ pipeline {
                         // Test SSH connectivity to the target using the private key
                         sh '''
                             echo "Testing SSH connectivity to the target..."
-                            ssh -i /tmp/ansible_private_key -o StrictHostKeyChecking=no vagrant@192.168.1.201 "echo 'SSH successful!'"
+                            sudo ssh -i tmp/ansible_private_key -o StrictHostKeyChecking=yes vagrant@192.168.1.201 "echo 'SSH successful!'"
                         '''
                         
                         // Optionally remove the private key after use for security
