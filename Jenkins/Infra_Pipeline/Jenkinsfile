@@ -12,17 +12,20 @@ pipeline {
         stage('ansible_playbook') {
             steps {
                 script {
-                    // Create a temporary file for the private key
-                    writeFile(file: '/tmp/ansible_private_key', text: ANSIBLE_PRIVATE_KEY)
-                    
-                    // Ensure the private key file has the correct permissions (only readable by the user)
-                    sh 'chmod 600 /tmp/ansible_private_key'
-                    
-                    // Test that the key works by running an Ansible playbook (replace this with your actual playbook)
-                    sh 'ansible-playbook -i Inventory/inventory.ini --private-key=/tmp/ansible_private_key Playbooks/ping_check.yml'
-                    
-                    // Optionally remove the private key after use for security
-                    sh 'rm -f /tmp/ansible_private_key'
+                    // Change to the Ansible directory
+                    dir('Ansible/') {
+                        // Create a temporary file for the private key
+                        writeFile(file: '/tmp/ansible_private_key', text: ANSIBLE_PRIVATE_KEY)
+                        
+                        // Ensure the private key file has the correct permissions (only readable by the user)
+                        sh 'chmod 600 /tmp/ansible_private_key'
+                        
+                        // Test that the key works by running an Ansible playbook
+                        sh 'ansible-playbook -i Inventory/inventory.ini --private-key=/tmp/ansible_private_key Playbooks/ping_check.yml'
+                        
+                        // Optionally remove the private key after use for security
+                        sh 'rm -f /tmp/ansible_private_key'
+                    }
                 }
             }
         }
