@@ -1,23 +1,69 @@
 pipeline {
     agent any
 
+    environment {
+        ANSIBLE_VERSION = 'Default_Ansible'   // Ansible installation name
+    }
+
+    parameters {
+        string(name: 'PLAYBOOK', defaultValue: 'Playbooks/ping_check.yml', description: 'Path to the Ansible playbook')
+        string(name: 'INVENTORY_FILE1', defaultValue: 'Inventory/inventory.ini', description: 'Path to the first inventory file')
+        string(name: 'INVENTORY_FILE2', defaultValue: 'Inventory/inventory_2.ini', description: 'Path to the second inventory file')
+        credentials(name: 'CREDENTIALS_ID_1', description: 'Credentials ID for Machine 1', defaultValue: 'Ansible_Target_Machine_M1')
+        credentials(name: 'CREDENTIALS_ID_2', description: 'Credentials ID for Machine 2', defaultValue: 'Ansible_Target_Machine_M2')
+    }
+
     stages {
-        stage('check_ansible_version') {
+        stage('Environment Check') {
             steps {
+                echo 'Checking if Ansible is installed...'
                 sh 'ansible --version'
             }
         }
-        stage('ansible_playbook') {
+
+        stage('Run Ansible Playbook for Machine 1') {
             steps {
                 script {
-                    dir('Ansible/') {
-                        // Run the Ansible playbook
-                        ansiblePlaybook credentialsId: 'Ansible_Target_Machine_M1', installation: 'Default_Ansible', inventory: 'Inventory/inventory.ini', playbook: 'Playbooks/ping_check.yml', vaultTmpPath: ''
-                        ansiblePlaybook credentialsId: 'Ansible_Target_Machine_M2', installation: 'Default_Ansible', inventory: 'Inventory/inventory_2.ini', playbook: 'Playbooks/ping_check.yml', vaultTmpPath: ''
-
+                    echo "Running Ansible Playbook for Machine 1 using inventory: ${params.INVENTORY_FILE1}"
+                    dir('Ansible') {
+                        ansiblePlaybook(
+                            credentialsId: "${params.CREDENTIALS_ID_1}",
+                            installation: "${env.ANSIBLE_VERSION}",
+                            inventory: "${params.INVENTORY_FILE1}",
+                            playbook: "${params.PLAYBOOK}"
+                        )
                     }
                 }
             }
+        }
+
+        stage('Run Ansible Playbook for Machine 2') {
+            steps {
+                script {
+                    echo "Running Ansible Playbook for Machine 2 using inventory: ${params.INVENTORY_FILE2}"
+                    dir('Ansible') {
+                        ansiblePlaybook(
+                            credentialsId: "${params.CREDENTIALS_ID_2}",
+                            installation: "${env.ANSIBLE_VERSION}",
+                            inventory: "${params.INVENTORY_FILE2}",
+                            playbook: "${params.PLAYBOOK}"
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Cleaning up workspace...'
+            deleteDir() // Ensures workspace cleanup
+        }
+        success {
+            echo 'Ansible playbooks ran successfully!'
+        }
+        failure {
+            echo 'Error occurred during Ansible playbook execution!'
         }
     }
 }
