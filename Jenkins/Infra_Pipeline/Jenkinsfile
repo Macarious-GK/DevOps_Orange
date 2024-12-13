@@ -14,6 +14,7 @@ pipeline {
                 script {
                     dir('Ansible/') {
                         // Write the private key to a temporary file
+                        sh 'ansible-playbook -i Inventory/inventory.ini --private-key=$ANSIBLE_PRIVATE_KEY Playbooks/ping_check.yml'
                         
                         writeFile(file: '/tmp/ansible_private_key', text: ANSIBLE_PRIVATE_KEY)
 
