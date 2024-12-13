@@ -22,8 +22,9 @@ pipeline {
 
                         // Test SSH connectivity to the target using the private key
                         sh '''
+                            ssh -i /tmp/ansible_private_key -o StrictHostKeyChecking=no vagrant@192.168.1.201 "echo 'SSH successful!'"
                             echo "Testing SSH connectivity to the target..."
-                            sudo ssh -i tmp/ansible_private_key -o StrictHostKeyChecking=no vagrant@192.168.1.201 "echo 'SSH successful!'"
+                            sudo ssh -i /tmp/ansible_private_key -o StrictHostKeyChecking=no vagrant@192.168.1.201 "echo 'SSH successful!'"
                         '''
                         
                         // Optionally remove the private key after use for security
