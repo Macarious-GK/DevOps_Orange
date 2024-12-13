@@ -2,6 +2,20 @@
 pipeline {
     agent any
 
+    environment {
+        ANSIBLE_VERSION = 'Default_Ansible'   // Ansible installation name
+    }
+
+
+    parameters {
+        string(name: 'PLAYBOOK_PULL& RUN_DockerImages', defaultValue: 'Playbooks/Pull&Run_dockerImage_Playbook.yml', description: 'Pull and Run Docker Images Playbook')
+
+        string(name: 'INVENTORY_FILE1', defaultValue: 'Inventory/inventory.ini', description: 'Path to the first inventory file')
+        string(name: 'INVENTORY_FILE2', defaultValue: 'Inventory/inventory_2.ini', description: 'Path to the second inventory file')
+        credentials(name: 'CREDENTIALS_ID_1', description: 'Credentials ID for Machine 1', defaultValue: 'Ansible_Target_Machine_M1')
+        credentials(name: 'CREDENTIALS_ID_2', description: 'Credentials ID for Machine 2', defaultValue: 'Ansible_Target_Machine_M2')
+    }
+
     stages {
         stage('Checkout SCM stage') {
             steps {
@@ -33,6 +47,41 @@ pipeline {
                     // Login to Docker Hub using stored credentials, Then Push Image
                     dockerHubLogin('Docker_Creds')
                     pushDockerImage('macarious25siv/orange:prometheus')
+                }
+            }
+        }
+
+        stage('Push Image ') {
+            steps {
+                script {
+                    // Login to Docker Hub using stored credentials, Then Push Image
+                    dockerHubLogin('Docker_Creds')
+                    pushDockerImage('macarious25siv/orange:prometheus')
+                }
+            }
+        }
+
+
+        stage('Deploy DockerContainers by Ansible to Machine 1&2') {
+            steps {
+                script {
+                    dir('Ansible') {
+                        echo "Deploying on Machine 1"
+                        ansiblePlaybook(
+                            credentialsId: "${params.CREDENTIALS_ID_2}",
+                            installation: "${env.ANSIBLE_VERSION}",
+                            inventory: "${params.INVENTORY_FILE2}",
+                            playbook: "${params.PLAYBOOK_Docker_Install}"
+                        )
+                        echo "Deployment done on Machine 2"
+                        ansiblePlaybook(
+                            credentialsId: "${params.CREDENTIALS_ID_2}",
+                            installation: "${env.ANSIBLE_VERSION}",
+                            inventory: "${params.INVENTORY_FILE2}",
+                            playbook: "${params.PLAYBOOK_Docker_Install}"
+                        )
+                    }
+                    echo "Deployment done on Machine 1 & 2"
                 }
             }
         }
