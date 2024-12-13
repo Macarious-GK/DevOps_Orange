@@ -13,6 +13,8 @@ pipeline {
                     dir('Ansible/') {
                         // Run the Ansible playbook
                         ansiblePlaybook credentialsId: 'Ansible_Target_Machine_M1', installation: 'Default_Ansible', inventory: 'Inventory/inventory.ini', playbook: 'Playbooks/ping_check.yml', vaultTmpPath: ''
+                        ansiblePlaybook credentialsId: 'Ansible_Target_Machine_M2', installation: 'Default_Ansible', inventory: 'Inventory/inventory_2.ini', playbook: 'Playbooks/ping_check.yml', vaultTmpPath: ''
+
                     }
                 }
             }
