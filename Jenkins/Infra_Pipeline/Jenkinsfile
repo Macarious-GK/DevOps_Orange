@@ -1,8 +1,6 @@
 pipeline {
     agent any
-    environment {
-        ANSIBLE_PRIVATE_KEY = credentials('managed_private_key') // Use Jenkins credential
-    }
+
     stages {
         stage('check_ansible_version') {
             steps {
@@ -14,7 +12,7 @@ pipeline {
                 script {
                     dir('Ansible/') {
                         // Run the Ansible playbook
-                        sh ' ansible-playbook -i Inventory/inventory.ini Playbooks/ping_check.yml'
+                        ansiblePlaybook credentialsId: 'Ansible_Target_Machine_M1', installation: 'Default_Ansible', inventory: 'Inventory/inventory.ini', playbook: 'Playbooks/ping_check.yml', vaultTmpPath: ''
                     }
                 }
             }
