@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        ANSIBLE_PRIVATE_KEY=credentials('managed_private_key') 
+        ANSIBLE_PRIVATE_KEY = credentials('managed_private_key') // Use Jenkins credential
     }
     stages {
         stage('check_ansible_version') {
@@ -11,9 +11,18 @@ pipeline {
         }
         stage('ansible_playbook') {
             steps {
-            sh 'ansible-playbook -i Inventory/inventory.ini --private-key=$ANSIBLE_PRIVATE_KEY Playbooks/ping_check.yml'
-        }
-        }
-        
+                dir('Ansible/') {
+                    // Make sure the private key is passed correctly using `echo` to write to a temporary file
+                    script {
+                        // Write the private key to a temporary file
+                        // writeFile file: '/tmp/ansible_private_key', text: ANSIBLE_PRIVATE_KEY
+                        // // Set the correct permissions for the private key file
+                        // sh 'chmod 600 /tmp/ansible_private_key'
+                        // Run the playbook with the private key file
+                        sh 'ansible-playbook -i Inventory/inventory.ini --private-key=/tmp/ansible_private_key Playbooks/ping_check.yml'
+                    }
+                }
+            }
         }
     }
+}
