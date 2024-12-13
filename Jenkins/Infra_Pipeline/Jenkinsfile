@@ -13,6 +13,7 @@ pipeline {
             steps {
                 script {
                     dir('Ansible/') {
+                        echo "Private key content: ${ANSIBLE_PRIVATE_KEY}" 
                         // Write the private key to a temporary file
                         writeFile(file: '/tmp/ansible_private_key', text: ANSIBLE_PRIVATE_KEY)
 
