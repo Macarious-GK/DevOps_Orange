@@ -1,0 +1,49 @@
+---
+- name: Install MiniKube
+  hosts: target_group
+  become: true
+
+  tasks:
+    - name: Download kubectl binary
+      ansible.builtin.shell:
+        cmd: snap install kubectl --classic
+
+    - name: Download Minikube binary
+      command: curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+
+    - name: Install Minikube binary
+      ansible.builtin.shell:
+        cmd: install minikube-linux-amd64 /usr/local/bin/minikube && rm minikube-linux-amd64
+
+    - name: Verify Minikube installation
+      command: minikube version
+      register: minikube_version
+      ignore_errors: yes
+
+    - name: Output Minikube version
+      debug:
+        msg: "{{ minikube_version.stdout }}"
+
+    - name: Ensure user is part of the Docker group
+      user:
+        name: "{{ ansible_user }}"
+        groups: docker
+        append: yes
+
+    - name: Log out and back in to apply group changes
+      shell: "newgrp docker"
+      when: ansible_user_id != 'root'
+
+    - name: Delete any existing Minikube clusters to reset the environment
+      command: sudo minikube delete
+      ignore_errors: yes
+
+    - name: Start Minikube with proper memory allocation and non-root user
+      ansible.builtin.shell:
+        cmd: "minikube start --driver=docker --memory=2000mb"
+      register: minikube_start
+      become: no
+
+    - name: Output Minikube start result
+      debug:
+        msg: "{{ minikube_start.stdout }}"

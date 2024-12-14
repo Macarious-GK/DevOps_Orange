@@ -7,8 +7,8 @@ pipeline {
 
     parameters {
         string(name: 'PLAYBOOK', defaultValue: 'Playbooks/ping_check.yml', description: 'Ping Check Playbook')
-        string(name: 'PLAYBOOK_Docker_Install', defaultValue: 'Playbooks/Ansible_Install_docker_Playbook.yml', description: 'Docker Installation Playbook')
-
+        string(name: 'PLAYBOOK_Docker_Install', defaultValue: 'Playbooks/Install_docker.yml', description: 'Docker Installation Playbook')
+        string(name: 'PLAYBOOK_Minikube_Install', defaultValue: 'Playbooks/Install_minikube&kubectl.yml', description: 'Docker Installation Playbook')
         string(name: 'INVENTORY_FILE1', defaultValue: 'Inventory/inventory.ini', description: 'Path to the first inventory file')
         string(name: 'INVENTORY_FILE2', defaultValue: 'Inventory/inventory_2.ini', description: 'Path to the second inventory file')
         credentials(name: 'CREDENTIALS_ID_1', description: 'Credentials ID for Machine 1', defaultValue: 'Ansible_Target_Machine_M1')
@@ -46,8 +46,6 @@ pipeline {
             }
         }
 
-
-
         stage('Install Docker on Machine 1') {
             steps {
                 script {
@@ -65,19 +63,19 @@ pipeline {
             }
         }
 
-        stage('Install Docker on Machine 2') {
+        stage('Install Minikube & kubernetes on Machine 2') {
             steps {
                 script {
-                    echo "Installing Docker on Machine 2"
+                    echo "Installing Minikube on Machine 2"
                     dir('Ansible') {
                         ansiblePlaybook(
                             credentialsId: "${params.CREDENTIALS_ID_2}",
                             installation: "${env.ANSIBLE_VERSION}",
                             inventory: "${params.INVENTORY_FILE2}",
-                            playbook: "${params.PLAYBOOK_Docker_Install}"
+                            playbook: "${params.PLAYBOOK_Minikube_Install}"
                         )
                     }
-                    echo "Docker Installed on Machine 2"
+                    echo "Minikube Installed on Machine 2"
                 }
             }
         }
