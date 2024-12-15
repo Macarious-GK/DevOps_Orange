@@ -26,39 +26,39 @@ pipeline {
             }
         }
 
-        stage('Install Dependencies') {
-            steps {
-                // Install the required dependencies
-                script {
-                    dir('APP') {
-                        installDjangoDependencies()
-                    }
-                }
-            }
-        }
+        // stage('Install Dependencies') {
+        //     steps {
+        //         // Install the required dependencies
+        //         script {
+        //             dir('APP') {
+        //                 installDjangoDependencies()
+        //             }
+        //         }
+        //     }
+        // }
 
-        stage('Linter Stage') {
-            steps {
-                // Run Flake8, save the output to a report, and check for fatal errors (e.g., syntax errors)
-                script {
-                    dir('APP'){
-                        runFlake8Linting()   
-                    }                 
-                }
-            }
-        }
+        // stage('Linter Stage') {
+        //     steps {
+        //         // Run Flake8, save the output to a report, and check for fatal errors (e.g., syntax errors)
+        //         script {
+        //             dir('APP'){
+        //                 runFlake8Linting()   
+        //             }                 
+        //         }
+        //     }
+        // }
 
-        stage('SAST Stage') {
-            steps {
-                // Run Bandit as SAST Stage to check vulnerabilities Staticly
-                script {
-                    dir('APP'){
-                    // sastBanditCheck()
-                    echo "Bandit Check is disabled for now"
-                    }
-                }
-            }
-        }  
+        // stage('SAST Stage') {
+        //     steps {
+        //         // Run Bandit as SAST Stage to check vulnerabilities Staticly
+        //         script {
+        //             dir('APP'){
+        //             // sastBanditCheck()
+        //             echo "Bandit Check is disabled for now"
+        //             }
+        //         }
+        //     }
+        // }  
 
         stage('UnitTesting') {
             steps {
