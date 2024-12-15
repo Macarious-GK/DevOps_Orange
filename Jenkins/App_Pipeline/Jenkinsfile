@@ -30,7 +30,7 @@ pipeline {
             steps {
                 // Install the required dependencies
                 script {
-                    dir('App') {
+                    dir('APP') {
                         installDjangoDependencies()
                     }
                 }
@@ -41,7 +41,7 @@ pipeline {
             steps {
                 // Run Flake8, save the output to a report, and check for fatal errors (e.g., syntax errors)
                 script {
-                    dir('App'){
+                    dir('APP'){
                         runFlake8Linting()   
                     }                 
                 }
@@ -52,7 +52,7 @@ pipeline {
             steps {
                 // Run Bandit as SAST Stage to check vulnerabilities Staticly
                 script {
-                    dir('App'){
+                    dir('APP'){
                     sastBanditCheck()
                     }
                 }
@@ -63,7 +63,7 @@ pipeline {
             steps {
                 // App Feature Testing: Unit Testing For Django APP
                 script {
-                    dir('App') {
+                    dir('APP') {
                         unitTestDjango_V2()
                     }   
                 }
