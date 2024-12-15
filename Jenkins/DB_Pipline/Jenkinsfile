@@ -25,7 +25,7 @@ pipeline {
             steps {
                 script {
                     // Test the Docker image with Snyk or Trivy
-                        trivyScanning(imageName:'macarious25siv/orange:mysql')
+                        trivyScanningReport(imageName:'macarious25siv/orange:mysql')
 
                 }
             }
