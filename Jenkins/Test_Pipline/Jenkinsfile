@@ -1,22 +1,25 @@
-pipeline {
-    agent any
-   
-    stages {
-        stage('Test SSH Access') {
-            steps {
-                withCredentials([vaultString(credentialsId: 'Vault_Database_username_secret', variable: 'DB_USER'),
-                                 vaultString(credentialsId: 'Vault_Database_password_secret', variable: 'DB_PASS')]) {
-                    script {
-                        echo "Building SQL Image with Vault Secrets..."
-                        sh """
-                        docker build --build-arg DB_USER=${DB_USER} \
-                                     --build-arg DB_PASS=${DB_PASS} \
-                                     -t my-sql-image .
-                        """
+    pipeline {
+        agent any
+    
+        stages {
+            stage('Test SSH Access') {
+                steps {
+                    withCredentials([vaultString(credentialsId: 'Vault_Database_username_secret', variable: 'DB_USER'),
+                                    vaultString(credentialsId: 'Vault_Database_password_secret', variable: 'DB_PASS')]) {
+                        script {
+                            dir('Docker/Database/') {
+                    
+                            echo "Building SQL Image with Vault Secrets..."
+                            sh """
+                            docker build --build-arg DB_USER=${DB_USER} \
+                                        --build-arg DB_PASS=${DB_PASS} \
+                                        -t my-sql-image .
+                            """
+                            }
+                        }
                     }
                 }
             }
+            
         }
-        
     }
-}
