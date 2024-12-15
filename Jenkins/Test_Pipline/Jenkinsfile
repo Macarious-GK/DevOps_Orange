@@ -20,6 +20,14 @@
                     }
                 }
             }
+            stage("Run Container"){
+                steps{
+                    sh
+                    """
+                    docker run -d --name my-sql-container my-sql-image
+                    """
+                }
+            }
             
         }
     }
