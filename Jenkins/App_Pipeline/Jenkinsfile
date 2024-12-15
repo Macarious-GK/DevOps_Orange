@@ -91,7 +91,7 @@ pipeline {
                 script {
                     // Test the Docker image with Snyk or Trivy
                     dir('APP/') {
-                        trivyScanning(imageName:"${params.APP_IMAGE}")
+                        trivyScanningReport(imageName:"${params.APP_IMAGE}")
                         // snykLogin('Snyk_Token_ID')
                         // snykTestDockerImage(imageName:'macarious25siv/books:latest')
                     }
