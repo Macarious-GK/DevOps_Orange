@@ -80,7 +80,7 @@ pipeline {
                 script {
                     // Build the Docker image
                     dir('APP/') {
-                        buildDockerImage('APP_IMAGE')
+                        buildDockerImage("${params.APP_IMAGE}")
                     }       
                 }
             }
@@ -91,7 +91,7 @@ pipeline {
                 script {
                     // Test the Docker image with Snyk or Trivy
                     dir('APP/') {
-                        trivyScanning(imageName:'APP_IMAGE')
+                        trivyScanning(imageName:"${params.APP_IMAGE}")
                         // snykLogin('Snyk_Token_ID')
                         // snykTestDockerImage(imageName:'macarious25siv/books:latest')
                     }
@@ -104,7 +104,7 @@ pipeline {
                 script {
                     // Login to Docker Hub using stored credentials, Then Push Image
                     dockerHubLogin('Docker_Creds')
-                    pushDockerImage('APP_IMAGE')
+                    pushDockerImage("${params.APP_IMAGE}")
                 }
             }
         }
