@@ -2,7 +2,7 @@
         agent any
     
         stages {
-            stage('Test SSH Access') {
+            stage('Vault with DB') {
                 steps {
                     withCredentials([vaultString(credentialsId: 'Vault_Database_username_secret', variable: 'DB_USER'),
                                     vaultString(credentialsId: 'Vault_Database_password_secret', variable: 'DB_PASS')]) {
