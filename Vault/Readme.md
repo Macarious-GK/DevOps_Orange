@@ -5,4 +5,7 @@ vault write -f auth/approle/role/jenkins-role/secret-id
 vault secrets enable -path=secrets kv
 vault write secrets/creds/vagrant username=siva password=siva
 vault write secrets/creds/DB_Pass secret=123456789
-vault write secrets/creds/DB_User secret=root
+vault write secrets/creds/DB_User secret=user1
+
+
+vault policy write jenkins jenkins-policy.hcl

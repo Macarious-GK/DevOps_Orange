@@ -1,0 +1,60 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Build Image') {
+            steps {
+                withCredentials([vaultString(credentialsId: 'Vault_Database_username_secret', variable: 'DB_USER'),
+                                 vaultString(credentialsId: 'Vault_Database_password_secret', variable: 'DB_PASS')]) {
+                    script {
+                        dir('Docker/Database/') {
+                            echo "Building SQL Image with Vault Secrets..."
+                            sh """
+                            docker build --build-arg DB_USER=${DB_USER} \
+                                        --build-arg DB_PASS=${DB_PASS} \
+                                        -t macarious25siv/orange:mysql .
+                            """
+                        }
+                    }
+                }
+            }
+        }
+         stage('Scan Image') {
+            steps {
+                script {
+                    // Test the Docker image with Snyk or Trivy
+                        trivyScanning(imageName:'macarious25siv/orange:mysql')
+
+                }
+            }
+        }
+
+        stage('Push Image') {
+            steps {
+                script {
+                    // Login to Docker Hub using stored credentials, Then Push Image
+                    dockerHubLogin('Docker_Creds')
+                    pushDockerImage('macarious25siv/orange:mysql')
+                }
+            }
+        }
+        
+    }
+
+
+    post {
+        always {
+            // Clean up or any other necessary steps
+            echo "Pipeline completed"
+            echo "Cleaning up the workspace and logging out from Docker Hub..."
+            sh 'docker logout'
+            cleanWs()
+        }
+        success {
+            echo "Pipeline was successful!"
+        }
+        failure {
+            echo "Pipeline failed!"
+        }
+    }
+}
