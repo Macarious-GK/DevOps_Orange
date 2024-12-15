@@ -1,0 +1,17 @@
+# Use the official MySQL image from Docker Hub
+FROM mysql:8.0
+
+ARG DB_USER
+ARG DB_PASS
+
+# Set environment variables
+ENV MYSQL_ROOT_PASSWORD=DB_PASS
+ENV MYSQL_DATABASE=my_django_db
+ENV MYSQL_USER=DB_USER
+ENV MYSQL_PASSWORD=DB_PASS
+
+# Copy any custom configuration files if needed
+# COPY ./my-custom.cnf /etc/mysql/conf.d/
+
+# Expose the default MySQL port
+EXPOSE 3306
