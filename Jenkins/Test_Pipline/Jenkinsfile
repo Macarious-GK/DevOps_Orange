@@ -22,8 +22,8 @@
             }
             stage("Run Container"){
                 steps{
-                    sh
-                    """
+                    
+                    sh """
                     docker run -d --name my-sql-container my-sql-image
                     """
                 }
