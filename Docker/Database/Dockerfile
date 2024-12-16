@@ -9,5 +9,5 @@ ENV MYSQL_ROOT_PASSWORD=$DB_PASS
 ENV MYSQL_DATABASE=my_django_db
 ENV MYSQL_USER=$DB_USER
 ENV MYSQL_PASSWORD=$DB_PASS
-
+COPY ./my_django_db /var/lib/mysql/my_django_db
 EXPOSE 3306

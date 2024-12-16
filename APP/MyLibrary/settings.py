@@ -54,11 +54,13 @@ INSTALLED_APPS = [
     'Custome_auth',
     'rest_framework.authtoken',
     'rest_framework',
+    'django_prometheus',
 
 
 ]
 
 MIDDLEWARE = [
+    'django_prometheus.middleware.PrometheusBeforeMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -66,6 +68,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_prometheus.middleware.PrometheusAfterMiddleware',
 ]
 
 
@@ -106,7 +109,7 @@ DATABASES = {
         'NAME': 'my_django_db',   
         'USER': 'root',   
         'PASSWORD': '123456789',   
-        'HOST': 'mysql',   
+        'HOST': '192.168.1.250',   
         'PORT': '3306',          
     }   
 } 
