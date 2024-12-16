@@ -99,12 +99,31 @@ pipeline {
             }
         }
 
+        stage('DAST') {
+            steps {
+                script {
+                    echo "This is Dast stage"
+                    // dastDjango()
+
+                }
+            }
+        }
+
         stage('Push Image') {
             steps {
                 script {
                     // Login to Docker Hub using stored credentials, Then Push Image
                     dockerHubLogin('Docker_Creds')
                     pushDockerImage("${params.APP_IMAGE}")
+                }
+            }
+        }
+
+        stage('Notify') {
+            steps {
+                script {
+                    echo "Notify the team about the successful build"
+                    // notifyGmail()
                 }
             }
         }
