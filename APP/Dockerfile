@@ -61,8 +61,9 @@ ENV PYTHONUNBUFFERED=1
 # Create and set working directory
 WORKDIR /app
 
-# Install build dependencies including pkg-config and mysqlclient dependencies
-RUN apk add --no-cache build-base pkg-config mariadb-dev
+# Update repositories and install build dependencies including musl-dev, pkgconfig, and mariadb-dev
+RUN apk update \
+    && apk add --no-cache build-base pkgconfig musl-dev mariadb-dev
 
 # Copy requirements file and install dependencies
 COPY requirements.txt . 
