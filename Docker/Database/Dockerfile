@@ -10,5 +10,7 @@ ENV MYSQL_DATABASE=my_django_db
 ENV MYSQL_USER=$DB_USER
 ENV MYSQL_PASSWORD=$DB_PASS
 
+COPY my_django_db.sql /docker-entrypoint-initdb.d/
+
 EXPOSE 3306
 
