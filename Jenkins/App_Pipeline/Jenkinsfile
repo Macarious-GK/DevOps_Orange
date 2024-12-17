@@ -119,14 +119,6 @@ pipeline {
             }
         }
 
-        stage('Notify') {
-            steps {
-                script {
-                    echo "Notify the team about the successful build"
-                    // notifyGmail()
-                }
-            }
-        }
 
         // stage('Deploy DockerContainers by Ansible to Machine 1') {
         //     steps {
@@ -196,58 +188,17 @@ pipeline {
             cleanWs()
         }
        success {
-            mail to: 'm.labibebidallah@nu.edu.eg',
-                 subject: "✅ APP Build Successful: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                 body: """
-                 <html>
-                     <head>
-                         <style>
-                             h1 { color: green; font-family: Arial, sans-serif; }
-                             p { font-size: 14px; color: black; }
-                             .details { color: green; font-weight: bold; }
-                         </style>
-                     </head>
-                     <body>
-                         <h1>✅ Build Successful!</h1>
-                         <p>This is a confirmation that the Jenkins CI_ORANGE_APP pipeline completed successfully.</p>
-                         <p>Details:</p>
-                         <ul>
-                             <li>Project: <span class="details">${env.JOB_NAME}</span></li>
-                             <li>Build Number: <span class="details">${env.BUILD_NUMBER}</span></li>
-                             <li>Status: <span class="details">SUCCESS</span></li>
-                         </ul>
-                         <p>Please <a href="${env.BUILD_URL}">check the logs</a> for more details.</p>
-                     </body>
-                 </html>
-                 """,
-                 mimeType: 'text/html'
+        notifyGmail(
+                to: 'm.labibebidallah@nu.edu.eg',
+                isSuccess: true
+            )
+            
         }
         failure {
-            mail to: 'm.labibebidallah@nu.edu.eg',
-                 subject: "❌ APP Build Failed: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                 body: """
-                 <html>
-                     <head>
-                         <style>
-                             h1 { color: red; font-family: Arial, sans-serif; }
-                             p { font-size: 14px; color: black; }
-                             .details { color: red; font-weight: bold; }
-                         </style>
-                     </head>
-                     <body>
-                         <h1>❌ Build Failed!</h1>
-                         <p>Unfortunately, the Jenkins CI_ORANGE_APP pipeline encountered an error.</p>
-                         <p>Details:</p>
-                         <ul>
-                             <li>Project: <span class="details">${env.JOB_NAME}</span></li>
-                             <li>Build Number: <span class="details">${env.BUILD_NUMBER}</span></li>
-                             <li>Status: <span class="details">FAILURE</span></li>
-                         </ul>
-                         <p>Please <a href="${env.BUILD_URL}">check the logs</a> for more details.</p>
-                     </body>
-                 </html>
-                 """,
-                 mimeType: 'text/html'
-        }
+            notifyGmail(
+                to: 'm.labibebidallah@nu.edu.eg',
+                isSuccess: false
+            )
+           
     }
 }
