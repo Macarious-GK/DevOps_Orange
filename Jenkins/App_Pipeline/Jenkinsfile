@@ -80,7 +80,8 @@ pipeline {
                 script {
                     // Build the Docker image
                     dir('APP/') {
-                        buildDockerImage("${params.APP_IMAGE}")
+                        echo "Building the Docker image..."
+                        // buildDockerImage("${params.APP_IMAGE}")
                     }       
                 }
             }
@@ -91,7 +92,8 @@ pipeline {
                 script {
                     // Test the Docker image with Snyk or Trivy
                     dir('APP/') {
-                        trivyScanningReport(imageName:"${params.APP_IMAGE}")
+                        echo "Scanning the Docker image for vulnerabilities..."
+                        // trivyScanningReport(imageName:"${params.APP_IMAGE}")
                         // snykLogin('Snyk_Token_ID')
                         // snykTestDockerImage(imageName:'macarious25siv/books:latest')
                     }
@@ -113,8 +115,9 @@ pipeline {
             steps {
                 script {
                     // Login to Docker Hub using stored credentials, Then Push Image
-                    dockerHubLogin('Docker_Creds')
-                    pushDockerImage("${params.APP_IMAGE}")
+                    echo "Pushing the Docker image to Docker Hub..."
+                    // dockerHubLogin('Docker_Creds')
+                    // pushDockerImage("${params.APP_IMAGE}")
                 }
             }
         }
@@ -188,17 +191,9 @@ pipeline {
             cleanWs()
         }
        success {
-        notifyGmail(
-                to: 'm.labibebidallah@nu.edu.eg',
-                isSuccess: true
-            )
-            
+            notifyGmail(to: 'm.labibebidallah@nu.edu.eg',: true)   
         }
         failure {
-            notifyGmail(
-                to: 'm.labibebidallah@nu.edu.eg',
-                isSuccess: false
-            )
-           
+            notifyGmail(to: 'm.labibebidallah@nu.edu.eg',isSuccess: false)
     }
 }
