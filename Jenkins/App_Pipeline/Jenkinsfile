@@ -191,7 +191,7 @@ pipeline {
             cleanWs()
         }
        success {
-            notifyGmail(to: 'm.labibebidallah@nu.edu.eg',: true)   
+            notifyGmail(to: 'm.labibebidallah@nu.edu.eg',isSuccess: true)   
         }
         failure {
             notifyGmail(to: 'm.labibebidallah@nu.edu.eg',isSuccess: false)
