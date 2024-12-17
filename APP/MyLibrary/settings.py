@@ -109,7 +109,7 @@ DATABASES = {
         'NAME': 'my_django_db',   
         'USER': 'root',   
         'PASSWORD': '123456789',   
-        'HOST': 'mysql',   
+        'HOST': 'mysql.macarious.svc.cluster.local',   
         'PORT': '3306',          
     }   
 } 

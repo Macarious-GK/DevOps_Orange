@@ -12,7 +12,7 @@ services:
       - mysql_data:/var/lib/mysql  # Add this line to persist data
 
   app:
-    image: macarious25siv/orange:app
+    image: macarious25siv/orange:appdocker
     container_name: django
     depends_on:
       - mysql

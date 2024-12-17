@@ -8,7 +8,7 @@ pipeline {
     }
 
     parameters {
-        string(name: 'APP_IMAGE', defaultValue: 'macarious25siv/orange:appdocker', description: 'App Docker Image Name')
+        string(name: 'APP_IMAGE', defaultValue: 'macarious25siv/orange:appK8s', description: 'App Docker Image Name')
         string(name: 'PLAYBOOK_PULL_RUN_DockerImages', defaultValue: 'Playbooks/Pull&Run_dockerImage_Playbook.yml', description: 'Pull and Run Docker Images Playbook')
         string(name: 'INVENTORY_FILE1', defaultValue: 'Inventory/inventory.ini', description: 'Path to the first inventory file')
         string(name: 'INVENTORY_FILE2', defaultValue: 'Inventory/inventory_2.ini', description: 'Path to the second inventory file')
