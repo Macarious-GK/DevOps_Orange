@@ -1,9 +1,8 @@
-# MySQL Deployment
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mysql-deployment
-  namespace: dev
+  name: mysql
+  namespace: macarious
 spec:
   replicas: 1
   selector:
@@ -15,18 +14,25 @@ spec:
         app: mysql
     spec:
       containers:
-      - name: mysql-container
+      - name: mysql
         image: macarious25siv/orange:mysql
         ports:
         - containerPort: 3306
+        volumeMounts:
+          - name: mysql-storage
+            mountPath: /var/lib/mysql  # MySQL's data directory
+      volumes:
+      - name: mysql-storage
+        persistentVolumeClaim:
+          claimName: mysql-pvc
         
 ---
 # MySQL Service
 apiVersion: v1
 kind: Service
 metadata:
-  name: mysql-service
-  namespace: dev
+  name: mysql
+  namespace: macarious
 spec:
   selector:
     app: mysql
@@ -35,3 +41,5 @@ spec:
       port: 3306
       targetPort: 3306
   type: ClusterIP
+---
+

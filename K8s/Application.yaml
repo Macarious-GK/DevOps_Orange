@@ -1,9 +1,11 @@
-# Application Deployment
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: Orange-app-deployment
-  namespace: dev
+  name: app-deployment
+  namespace: macarious
+  labels:
+    app: orangeapp
 spec:
   replicas: 1
   selector:
@@ -15,18 +17,16 @@ spec:
         app: orangeapp
     spec:
       containers:
-      - name: orangeapp-container
-        image: macarious25siv/orange:app
+      - name: orangeapp
+        image: macarious25siv/orange:appK8s
         ports:
-        - containerPort: 8000    # Update with the port your application listens on
-
+        - containerPort: 8000
 ---
-# Application Service
 apiVersion: v1
 kind: Service
 metadata:
-  name: orangeapp-service
-  namespace: dev
+  name: app-service
+  namespace: macarious
 spec:
   selector:
     app: orangeapp

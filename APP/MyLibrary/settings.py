@@ -36,7 +36,7 @@ SECRET_KEY = 'django-insecure-691py28fdo&!00j)s=mue=7%jv*_*0$3v+_l^i=4x1j7f9!yq$
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -58,6 +58,9 @@ INSTALLED_APPS = [
 
 
 ]
+
+CSRF_TRUSTED_ORIGINS = ['*']
+
 
 MIDDLEWARE = [
     'django_prometheus.middleware.PrometheusBeforeMiddleware',

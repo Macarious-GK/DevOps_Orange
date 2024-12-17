@@ -1,0 +1,20 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: copy-db-job
+  namespace: macarious
+spec:
+  template:
+    spec:
+      containers:
+      - name: copy-db
+        image: macarious25siv/orange:mysql  # Use the MySQL image or a custom image with MySQL client tools
+        command: ['sh', '-c', 'cp -r /var/lib/mysql/* /mnt/data/mysql/']
+        volumeMounts:
+        - name: mysql-storage
+          mountPath: /mnt/data/mysql  # Mount the persistent volume to this location
+      restartPolicy: OnFailure
+      volumes:
+      - name: mysql-storage
+        persistentVolumeClaim:
+          claimName: mysql-pvc  # Replace with the actual PVC name
