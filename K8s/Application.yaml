@@ -1,0 +1,38 @@
+# Application Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: Orange-app-deployment
+  namespace: dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: orangeapp
+  template:
+    metadata:
+      labels:
+        app: orangeapp
+    spec:
+      containers:
+      - name: orangeapp-container
+        image: macarious25siv/orange:app
+        ports:
+        - containerPort: 8000    # Update with the port your application listens on
+
+---
+# Application Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: orangeapp-service
+  namespace: dev
+spec:
+  selector:
+    app: orangeapp
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8000
+      nodePort: 30036
+  type: NodePort

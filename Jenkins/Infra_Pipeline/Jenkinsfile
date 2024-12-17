@@ -1,3 +1,5 @@
+@Library('Jenkins-Shared-Library') _
+
 pipeline {
     agent any
 
@@ -46,15 +48,30 @@ pipeline {
             }
         }
 
-        stage('Install Docker on Machine 1') {
+
+        stage('Install Minikube & kubernetes on Machine 1') {
             steps {
                 script {
-                    echo "Installing Docker on Machine 1"
+                    echo "Installing Minikube on Machine 1"
                     dir('Ansible') {
                         ansiblePlaybook(
                             credentialsId: "${params.CREDENTIALS_ID_1}",
                             installation: "${env.ANSIBLE_VERSION}",
                             inventory: "${params.INVENTORY_FILE1}",
+                            playbook: "${params.PLAYBOOK_Minikube_Install}"
+                        )
+                    }
+                    echo "Minikube Installed on Machine 1"
+                }
+        stage('Install Docker on Machine 2') {
+            steps {
+                script {
+                    echo "Installing Docker on Machine 2"
+                    dir('Ansible') {
+                        ansiblePlaybook(
+                            credentialsId: "${params.CREDENTIALS_ID_2}",
+                            installation: "${env.ANSIBLE_VERSION}",
+                            inventory: "${params.INVENTORY_FILE2}",
                             playbook: "${params.PLAYBOOK_Docker_Install}"
                         )
                     }
@@ -62,21 +79,6 @@ pipeline {
                 }
             }
         }
-
-        stage('Install Minikube & kubernetes on Machine 2') {
-            steps {
-                script {
-                    echo "Installing Minikube on Machine 2"
-                    dir('Ansible') {
-                        ansiblePlaybook(
-                            credentialsId: "${params.CREDENTIALS_ID_2}",
-                            installation: "${env.ANSIBLE_VERSION}",
-                            inventory: "${params.INVENTORY_FILE2}",
-                            playbook: "${params.PLAYBOOK_Minikube_Install}"
-                        )
-                    }
-                    echo "Minikube Installed on Machine 2"
-                }
             }
         }
     }
@@ -86,11 +88,11 @@ pipeline {
             echo 'Cleaning up workspace...'
             deleteDir() // Ensures workspace cleanup
         }
-        success {
-            echo 'Ansible playbooks ran successfully!'
+        ccess {
+            notifyGmail(to: 'm.labibebidallah@nu.edu.eg',isSuccess: true)   
         }
         failure {
-            echo 'Error occurred during Ansible playbook execution!'
-        }
+            notifyGmail(to: 'm.labibebidallah@nu.edu.eg',isSuccess: false)
+    }
     }
 }
