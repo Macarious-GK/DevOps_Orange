@@ -1,4 +1,3 @@
-
 # Build Stage
 FROM python:3.11-alpine AS build
 
@@ -9,8 +8,9 @@ ENV PYTHONUNBUFFERED=1
 # Create and set working directory
 WORKDIR /app
 
-# Install build dependencies
-RUN apk add --no-cache build-base
+# Update repositories and install build dependencies including musl-dev, pkgconfig, and mariadb-dev
+RUN apk update \
+    && apk add --no-cache build-base pkgconfig musl-dev mariadb-dev 
 
 # Copy requirements file and install dependencies
 COPY requirements.txt . 
@@ -32,6 +32,9 @@ ENV PYTHONUNBUFFERED=1
 
 # Create and set working directory
 WORKDIR /app
+
+RUN apk update \
+    && apk add --no-cache mariadb-dev
 
 # Install setuptools in the final image
 RUN pip install --upgrade setuptools==70.0.0
