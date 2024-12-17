@@ -196,4 +196,5 @@ pipeline {
         failure {
             notifyGmail(to: 'm.labibebidallah@nu.edu.eg',isSuccess: false)
     }
+    }
 }
