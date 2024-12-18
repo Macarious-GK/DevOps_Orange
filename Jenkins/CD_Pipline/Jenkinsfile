@@ -5,6 +5,7 @@ pipeline {
         SSH_CREDENTIALS_ID = "Ansible_Target_Machine_M1"  // Replace with your SSH credentials ID
         MINIKUBE_HOST2 = "192.168.1.202"  // Minikube VM IP address
         SSH_CREDENTIALS_ID2 = "Ansible_Target_Machine_M2"  // Replace with your SSH credentials ID
+        
     }
     stages {
         stage('Test SSH Access VM 1') {
@@ -16,7 +17,7 @@ pipeline {
                 }
             }
         }
-        stage('Deployment on Minikube "VM 1"') {
+        stage('Deployment on Minikube VM 1') {
             steps {
                 script {
                     dir('K8s/') {
@@ -48,7 +49,7 @@ pipeline {
                                     echo "Applying Application.yaml...";
                                     kubectl apply -f Application.yaml
 
-                                    echo "Waiting for resources to be created..."
+                                    echo "Waiting for resources to be created...";
                                     sleep 30
                                 '
                             """
@@ -88,6 +89,15 @@ pipeline {
                         """
                     }
                         
+                    }
+                }
+            }
+        }
+        stage('Deployment on AWS') {
+            steps {
+                script {
+                    dir('K8s'){
+                        checkdeployEksClusterOrange('aws-jenkins-credentials', 'Macarious-eks-cluster','us-east-2')
                     }
                 }
             }

@@ -47,8 +47,6 @@ pipeline {
                 }
             }
         }
-
-
         stage('Install Minikube & kubernetes on Machine 1') {
             steps {
                 script {
@@ -62,7 +60,11 @@ pipeline {
                         )
                     }
                     echo "Minikube Installed on Machine 1"
+                    }
                 }
+            }
+        
+        
         stage('Install Docker on Machine 2') {
             steps {
                 script {
@@ -74,25 +76,24 @@ pipeline {
                             inventory: "${params.INVENTORY_FILE2}",
                             playbook: "${params.PLAYBOOK_Docker_Install}"
                         )
-                    }
+                        }
                     echo "Docker Installed on Machine 1"
+                    }
                 }
             }
-        }
             }
         }
     }
-
     post {
         always {
             echo 'Cleaning up workspace...'
             deleteDir() // Ensures workspace cleanup
         }
-        ccess {
+        success {
             notifyGmail(to: 'm.labibebidallah@nu.edu.eg',isSuccess: true)   
         }
         failure {
             notifyGmail(to: 'm.labibebidallah@nu.edu.eg',isSuccess: false)
-    }
+        }
     }
 }
