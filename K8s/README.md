@@ -60,13 +60,14 @@ Deploy the database using a Kubernetes Deployment. The Deployment manages the li
 
 ## 5. Application Deployment & Exposing
 
-Deploy the application using a Kubernetes Deployment. To make the application accessible externally, create a Kubernetes Service of type NodePort. This service routes external traffic to the application's pods through a specific port (in this case, `port: 30036`) on each node in the cluster.
+Deploy the application using a Kubernetes Deployment. To make the application accessible externally, create a Kubernetes Service of type NodePort. This service routes external traffic to the application's pods through a specific port (in this case, `port: 30036`) on each node in the cluster. Also, We are using secrets for SECRET_KEY in Djnago application.
 
 ### Steps:
 1. Define a Service of type `NodePort` in your configuration.
 2. Apply the configuration to create the Service:
 
     ```bash
+    kubectl apply -f Secrets.yaml
     kubectl apply -f Application.yaml
     ```
 

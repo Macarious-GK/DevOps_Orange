@@ -46,7 +46,8 @@ pipeline {
                                     echo "Waiting for resources to be created...";
                                     sleep 60
 
-                                    echo "Applying Application.yaml...";
+                                    echo "Applying Secrets and Application.yaml...";
+                                    kubectl apply -f Secrets.yaml
                                     kubectl apply -f Application.yaml
 
                                     echo "Waiting for resources to be created...";
