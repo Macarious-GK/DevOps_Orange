@@ -1,0 +1,67 @@
+Vagrant.configure("2") do |config|
+    # Define the Ansible Control Node (host)
+    config.vm.define "control" do |control|
+      control.vm.box = "ubuntu/jammy64"
+      control.vm.box_version = "20240712.0.0"
+      control.vm.network "private_network", type: "dhcp"
+      control.vm.hostname = "control"
+      control.vm.network "public_network", ip: "192.168.1.200", bridge: "WiFi"
+
+  
+      control.vm.provider "virtualbox" do |vb|
+        vb.name = "Ansible_Control_VM"     # Set the name of the VM
+        vb.gui = false                     # Disable GUI mode
+        vb.memory = "1024"                 # Memory allocation (optional)
+        vb.cpus = 1                        # Number of CPU cores (optional)
+      end
+  
+      # Provisioning the control node with Ansible
+      control.vm.provision "shell", inline: <<-SHELL
+        sudo apt update -y && sudo apt upgrade -y 
+        sudo apt install curl -y
+        sudo apt-get install -y ansible
+      SHELL
+  
+
+    end
+  
+    # Define the Managed Node (target for Ansible management)
+    config.vm.define "managed" do |managed|
+      managed.vm.box = "ubuntu/jammy64"
+      managed.vm.box_version = "20240712.0.0"
+      managed.vm.network "public_network", ip: "192.168.1.201", bridge: "WiFi"
+      managed.vm.hostname = "managed"
+  
+      managed.vm.provider "virtualbox" do |vb|
+        vb.name = "Ansible_Managed_VM"     # Set the name of the VM
+        vb.gui = false                     # Disable GUI mode
+        vb.memory = "4096"                 # Memory allocation (optional)
+        vb.cpus = 3                      # Number of CPU cores (optional)
+      end
+  
+      # Provisioning the managed node
+      managed.vm.provision "shell", inline: <<-SHELL
+        sudo apt update -y && sudo apt upgrade -y 
+      SHELL
+  
+    end
+    config.vm.define "managed2" do |managed2|
+      managed2.vm.box = "ubuntu/jammy64"
+      managed2.vm.box_version = "20240712.0.0"
+      managed2.vm.network "public_network", ip: "192.168.1.202", bridge: "WiFi" # Replace "WiFi" with your network adapter name
+      managed2.vm.hostname = "managed2"
+  
+      managed2.vm.provider "virtualbox" do |vb|
+        vb.name = "Ansible_Managed2_VM"  # Set the name of the VM
+        vb.gui = false                   # Disable GUI mode
+        vb.memory = "512"                # Memory allocation
+        vb.cpus = 1                      # Number of CPU cores
+      end
+  
+      # Provisioning the managed node
+      managed2.vm.provision "shell", inline: <<-SHELL
+        sudo apt update -y && sudo apt upgrade -y
+      SHELL
+    end
+  end
+  

@@ -1,0 +1,54 @@
+pipeline {
+    agent any
+    environment {
+        MINIKUBE_HOST = "192.168.1.201"  // Minikube VM IP address
+        SSH_CREDENTIALS_ID = "Ansible_Target_Machine_M1"  // Replace with your SSH credentials ID
+        MINIKUBE_HOST2 = "192.168.1.202"  // Minikube VM IP address
+        SSH_CREDENTIALS_ID2 = "Ansible_Target_Machine_M2"  // Replace with your SSH credentials ID
+    }
+    stages {
+        stage('Test SSH Access') {
+            steps {
+                script {
+                    // Use the sshagent plugin to access the SSH key securely
+                    sshagent([SSH_CREDENTIALS_ID]) {
+                        // Test SSH connection to Minikube VM and run the hostname command
+                        sh "ssh -o StrictHostKeyChecking=no vagrant@${MINIKUBE_HOST} 'hostname'"
+                    }
+                }
+            }
+        }
+        stage('Run Multiple Commands') {
+            steps {
+                script {
+                    // Use the sshagent plugin to access the SSH key securely
+                    sshagent([SSH_CREDENTIALS_ID]) {
+                        // Running multiple commands with semicolons
+                        sh """
+                            ssh -o StrictHostKeyChecking=no vagrant@${MINIKUBE_HOST} '
+                                echo "Running script on Minikube VM"; 
+                                hostname; 
+                                echo "Disk Usage:"; 
+                                df -h; 
+                                echo "Current Users:"; 
+                                whoami
+                            '
+                        """
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs()
+        }
+       success {
+            notifyGmail(to: 'm.labibebidallah@nu.edu.eg',isSuccess: true)   
+        }
+        failure {
+            notifyGmail(to: 'm.labibebidallah@nu.edu.eg',isSuccess: false)
+    }
+    }
+}

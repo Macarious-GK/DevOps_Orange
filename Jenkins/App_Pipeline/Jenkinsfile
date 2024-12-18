@@ -101,15 +101,15 @@ pipeline {
             }
         }
 
-        stage('DAST') {
-            steps {
-                script {
-                    echo "This is Dast stage"
-                    // dastDjango()
+        // stage('DAST') {
+        //     steps {
+        //         script {
+        //             echo "This is Dast stage"
+        //             // dastDjango()
 
-                }
-            }
-        }
+        //         }
+        //     }
+        // }
 
         stage('Push Image') {
             steps {

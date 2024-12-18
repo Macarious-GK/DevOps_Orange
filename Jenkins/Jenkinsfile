@@ -7,7 +7,7 @@ pipeline {
         SSH_CREDENTIALS_ID2 = "Ansible_Target_Machine_M2"  // Replace with your SSH credentials ID
     }
     stages {
-        stage('Test SSH Access') {
+        stage('Docker Deployment') {
             steps {
                 script {
                     // Use the sshagent plugin to access the SSH key securely
@@ -38,5 +38,17 @@ pipeline {
                 }
             }
         }
+    }
+
+    post {
+        always {
+            cleanWs()
+        }
+       success {
+            notifyGmail(to: 'm.labibebidallah@nu.edu.eg',isSuccess: true)   
+        }
+        failure {
+            notifyGmail(to: 'm.labibebidallah@nu.edu.eg',isSuccess: false)
+    }
     }
 }
