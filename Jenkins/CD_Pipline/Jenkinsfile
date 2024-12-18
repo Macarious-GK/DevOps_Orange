@@ -7,33 +7,87 @@ pipeline {
         SSH_CREDENTIALS_ID2 = "Ansible_Target_Machine_M2"  // Replace with your SSH credentials ID
     }
     stages {
-        stage('Test SSH Access') {
+        stage('Test SSH Access VM 1') {
             steps {
                 script {
-                    // Use the sshagent plugin to access the SSH key securely
                     sshagent([SSH_CREDENTIALS_ID]) {
-                        // Test SSH connection to Minikube VM and run the hostname command
                         sh "ssh -o StrictHostKeyChecking=no vagrant@${MINIKUBE_HOST} 'hostname'"
                     }
                 }
             }
         }
-        stage('Run Multiple Commands') {
+        stage('Deployment on Minikube "VM 1"') {
             steps {
                 script {
-                    // Use the sshagent plugin to access the SSH key securely
-                    sshagent([SSH_CREDENTIALS_ID]) {
-                        // Running multiple commands with semicolons
+                    dir('K8s/') {
+                        sshagent([SSH_CREDENTIALS_ID]) {
+                            sh """
+                                ssh -o StrictHostKeyChecking=no vagrant@${MINIKUBE_HOST} '
+                                    echo "Running script on Minikube VM"; 
+                                    echo "Current Users:"; 
+                                    whoami
+
+                                    echo "Applying namespace.yaml...";
+                                    kubectl apply -f Namespace.yaml
+
+                                    echo "Applying pv.yaml...";
+                                    kubectl apply -f PV.yaml
+
+                                    echo "Applying pvc.yaml...";
+                                    kubectl apply -f PVC.yaml
+
+                                    echo "Applying job.yaml...";
+                                    kubectl apply -f Job.yaml
+
+                                    echo "Applying Database.yaml...";
+                                    kubectl apply -f Database.yaml
+
+                                    echo "Waiting for resources to be created...";
+                                    sleep 60
+
+                                    echo "Applying Application.yaml...";
+                                    kubectl apply -f Application.yaml
+
+                                    echo "Waiting for resources to be created..."
+                                    sleep 30
+                                '
+                            """
+                        }   
+                    }
+                }
+            }
+        }
+        stage('Test SSH Access Machine 2') {
+            steps {
+                script {
+                    sshagent([SSH_CREDENTIALS_ID2]) {
+                        sh "ssh -o StrictHostKeyChecking=no vagrant@${MINIKUBE_HOST2} 'hostname'"
+                    }
+                }
+            }
+        }
+        stage('Deployment on Docker VM 2') {
+            steps {
+                script {
+                    dir('Docker/Docker_compose') {
+                        sshagent([SSH_CREDENTIALS_ID2]) {
                         sh """
-                            ssh -o StrictHostKeyChecking=no vagrant@${MINIKUBE_HOST} '
-                                echo "Running script on Minikube VM"; 
-                                hostname; 
-                                echo "Disk Usage:"; 
-                                df -h; 
+                            ssh -o StrictHostKeyChecking=no vagrant@${MINIKUBE_HOST2} '
+                                echo "Running script on Docker VM"; 
                                 echo "Current Users:"; 
                                 whoami
+
+                                echo "Applying namespace.yaml...";
+                                docker-compose up --build -d
+
+                                echo "Waiting for resources to be created...";
+                                sleep 60
+
+                                echo "Deployment on Docker VM 2 done";
                             '
                         """
+                    }
+                        
                     }
                 }
             }
@@ -52,3 +106,6 @@ pipeline {
     }
     }
 }
+
+
+

@@ -9,7 +9,6 @@ pipeline {
 
     parameters {
         string(name: 'APP_IMAGE', defaultValue: 'macarious25siv/orange:appK8s', description: 'App Docker Image Name')
-        string(name: 'PLAYBOOK_PULL_RUN_DockerImages', defaultValue: 'Playbooks/Pull&Run_dockerImage_Playbook.yml', description: 'Pull and Run Docker Images Playbook')
         string(name: 'INVENTORY_FILE1', defaultValue: 'Inventory/inventory.ini', description: 'Path to the first inventory file')
         string(name: 'INVENTORY_FILE2', defaultValue: 'Inventory/inventory_2.ini', description: 'Path to the second inventory file')
         credentials(name: 'CREDENTIALS_ID_1', description: 'Credentials ID for Machine 1', defaultValue: 'Ansible_Target_Machine_M1')
@@ -101,16 +100,6 @@ pipeline {
             }
         }
 
-        // stage('DAST') {
-        //     steps {
-        //         script {
-        //             echo "This is Dast stage"
-        //             // dastDjango()
-
-        //         }
-        //     }
-        // }
-
         stage('Push Image') {
             steps {
                 script {
@@ -121,65 +110,6 @@ pipeline {
                 }
             }
         }
-
-
-        // stage('Deploy DockerContainers by Ansible to Machine 1') {
-        //     steps {
-        //         script {
-        //             dir('Ansible') {
-        //                 echo "Deploying on Machine 1"
-        //                 ansiblePlaybook(
-        //                     credentialsId: "${params.CREDENTIALS_ID_1}",
-        //                     installation: "${env.ANSIBLE_VERSION}",
-        //                     inventory: "${params.INVENTORY_FILE1}",
-        //                     playbook: "${params.PLAYBOOK_PULL_RUN_DockerImages}"
-        //                 )
-        //                 echo "Docker Deployment done on Machine 2"
-                        
-        //             }
-        //         }
-        //     }
-        // }
-
-        // stage('Deploy K8s on Minikube to Machine 2') {
-        //     steps {
-        //         script {
-        //             // Use the sshagent plugin to access the SSH key securely
-        //                 echo "Deploying on Machine 2"
-        //             sshagent([params.CREDENTIALS_ID_2]) {
-        //                 // Running multiple commands with semicolons
-        //                 sh """
-        //                     ssh -o StrictHostKeyChecking=no vagrant@${MINIKUBE_HOST} '
-        //                         kubectl get svc
-        //                         echo "Applying namespace.yaml..."
-        //                         kubectl apply -f namespace.yaml
-
-        //                         echo "Applying pv.yaml..."
-        //                         kubectl apply -f pv.yaml
-
-        //                         echo "Applying pvc.yaml..."
-        //                         kubectl apply -f pvc.yaml
-
-        //                         echo "Applying job.yaml..."
-        //                         kubectl apply -f job.yaml
-
-        //                         echo "Applying service.yaml..."
-        //                         kubectl apply -f service.yaml
-
-        //                         echo "Applying ingress.yaml..."
-        //                         kubectl apply -f ingress.yaml
-
-        //                         echo "Applying deployment.yaml..."
-        //                         kubectl apply -f deployment.yaml
-                                
-        //                         kubectl get svc -n macarious
-        //                     '
-        //                 """
-        //             }
-        //             echo "Minikube Deployment done on Machine 2"
-        //         }
-        //     }
-        // }
 
     }
     
