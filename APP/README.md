@@ -15,4 +15,4 @@ The application features a secure login and user authentication system, allowing
 The homepage offers an intuitive interface for users to browse the library's collection, check book availability, and manage borrowing statuses. Admins have additional access to manage book records and user interactions.
 
 
-![Application Homepage](/Figures/App_working.png)
+![Application Homepage](/Figures/App_working.PNG)

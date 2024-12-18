@@ -28,8 +28,6 @@ This project sets up a monitoring solution using **Grafana** and **Prometheus** 
 - **`Grafana`**: A platform for monitoring and observability, used to visualize metrics collected by Prometheus.  
   ![Grafana](/Figures/Grafana_working.png)
 
-## Repo Folder System
-
 - **`Alerting`**: Configuring alerts when the app is down more than 30s.
   ![Alerting](/Figures/Alert_working.png)
 

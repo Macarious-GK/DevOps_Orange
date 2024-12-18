@@ -10,7 +10,7 @@ pipeline {
     parameters {
         string(name: 'PLAYBOOK', defaultValue: 'Playbooks/ping_check.yml', description: 'Ping Check Playbook')
         string(name: 'PLAYBOOK_Docker_Install', defaultValue: 'Playbooks/Install_docker.yml', description: 'Docker Installation Playbook')
-        string(name: 'PLAYBOOK_Minikube_Install', defaultValue: 'Playbooks/Install_minikube&kubectl.yml', description: 'Docker Installation Playbook')
+        string(name: 'PLAYBOOK_Minikube_Install', defaultValue: 'Playbooks/Install_minikube&kubectl.yml', description: 'Minikube Installation Playbook')
         string(name: 'INVENTORY_FILE1', defaultValue: 'Inventory/inventory.ini', description: 'Path to the first inventory file')
         string(name: 'INVENTORY_FILE2', defaultValue: 'Inventory/inventory_2.ini', description: 'Path to the second inventory file')
         credentials(name: 'CREDENTIALS_ID_1', description: 'Credentials ID for Machine 1', defaultValue: 'Ansible_Target_Machine_M1')
@@ -24,6 +24,7 @@ pipeline {
                 sh 'ansible --version'
             }
         }
+        
         stage('Test: Ping Machines') {
             steps {
                 script {
@@ -47,7 +48,8 @@ pipeline {
                 }
             }
         }
-        stage('Install Minikube & kubernetes on Machine 1') {
+        
+        stage('Install Minikube & Kubernetes on Machine 1') {
             steps {
                 script {
                     echo "Installing Minikube on Machine 1"
@@ -60,11 +62,10 @@ pipeline {
                         )
                     }
                     echo "Minikube Installed on Machine 1"
-                    }
                 }
             }
-        
-        
+        }
+
         stage('Install Docker on Machine 2') {
             steps {
                 script {
@@ -76,24 +77,23 @@ pipeline {
                             inventory: "${params.INVENTORY_FILE2}",
                             playbook: "${params.PLAYBOOK_Docker_Install}"
                         )
-                        }
-                    echo "Docker Installed on Machine 1"
                     }
+                    echo "Docker Installed on Machine 2"
                 }
-            }
             }
         }
     }
+
     post {
         always {
             echo 'Cleaning up workspace...'
             deleteDir() // Ensures workspace cleanup
         }
         success {
-            notifyGmail(to: 'm.labibebidallah@nu.edu.eg',isSuccess: true)   
+            notifyGmail(to: 'm.labibebidallah@nu.edu.eg', isSuccess: true)
         }
         failure {
-            notifyGmail(to: 'm.labibebidallah@nu.edu.eg',isSuccess: false)
+            notifyGmail(to: 'm.labibebidallah@nu.edu.eg', isSuccess: false)
         }
     }
 }
