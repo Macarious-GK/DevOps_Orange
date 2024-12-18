@@ -1,6 +1,7 @@
 # Deployment on Minikube
 This guide explains how to deploy an application on Minikube using Kubernetes `kubectl`. It covers the creation of a namespace, setup of persistent storage, initialization of data, deployment of the Database & application.
 
+  ![K8s](/Figures/Kubernetes_logo.png)
 
 
 ## 1. Namespace Creation

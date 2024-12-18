@@ -2,6 +2,9 @@
 
 In this section, we utilized Terraform to manage and provision the infrastructure on AWS, ensuring a scalable and consistent setup for the "Book Library Management" application. The infrastructure is designed to be modular and maintainable, using separate modules for different components such as VPC, security groups, and EKS clusters. Additionally, Terraform is configured to store its state files on an S3 bucket, centralizing resource management and enhancing collaboration.
 
+  ![Terraform](/Figures/terraform-logo.png)
+
+
 ## Prerequisites
 Before creating Infrastructure as Code (IaC), ensure you have created an IAM Role on AWS and obtained the necessary credentials.
 
