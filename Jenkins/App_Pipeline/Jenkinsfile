@@ -25,12 +25,12 @@ pipeline {
             }
         }
 
-        stage('Install Dependencies') {
+        stage('Dependencies check') {
             steps {
                 // Install the required dependencies
                 script {
                     dir('APP') {
-                        // installDjangoDependencies()
+                        installDjangoDependencies()
                         echo "Django Dependencies are already installed"
                     }
                 }
@@ -42,7 +42,7 @@ pipeline {
                 // Run Flake8, save the output to a report, and check for fatal errors (e.g., syntax errors)
                 script {
                     dir('APP'){
-                        // runFlake8Linting()   
+                        runFlake8Linting()   
                         echo "Flake8 Linting is disabled for now"
                     }                 
                 }
@@ -54,7 +54,7 @@ pipeline {
                 // Run Bandit as SAST Stage to check vulnerabilities Staticly
                 script {
                     dir('APP'){
-                    // sastBanditCheck()
+                    sastBanditCheck()
                     echo "Bandit Check is disabled for now"
                     }
                 }
@@ -66,13 +66,12 @@ pipeline {
                 // App Feature Testing: Unit Testing For Django APP
                 script {
                     dir('APP') {
-                        // unitTestDjango_V2()
+                        unitTestDjango_V2()
                         echo "Unit Testing is disabled for now"
                     }   
                 }
             }
         }
-
 
         stage('Build Image') {
             steps {
@@ -80,7 +79,7 @@ pipeline {
                     // Build the Docker image
                     dir('APP/') {
                         echo "Building the Docker image..."
-                        buildDockerImage("${params.APP_IMAGE}")
+                        // buildDockerImage("${params.APP_IMAGE}")
                     }       
                 }
             }
@@ -105,8 +104,17 @@ pipeline {
                 script {
                     // Login to Docker Hub using stored credentials, Then Push Image
                     echo "Pushing the Docker image to Docker Hub..."
-                    dockerHubLogin('Docker_Creds')
-                    pushDockerImage("${params.APP_IMAGE}")
+                    // dockerHubLogin('Docker_Creds')
+                    // pushDockerImage("${params.APP_IMAGE}")
+                }
+            }
+        }
+        stage('ArgoCD Sync'){
+            steps{
+                script{
+                    echo "Syncing ArgoCD"
+                    // argoCD_Sync()
+                      
                 }
             }
         }

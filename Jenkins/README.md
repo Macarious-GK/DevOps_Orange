@@ -21,8 +21,7 @@ This repository contains Jenkins pipelines for different parts of the applicatio
 
 #### Install Plugins
 1. Go to **Manage Jenkins** -> **Manage Plugins**.
-2. Under the **Available** tab, search for **AWS Credentials**, **AWS Steps**, and **GitHub**.
-3. Select the plugins and click **Install without Restart**.
+2. Select the plugins and click **Install without Restart**.
 
 ## Jenkins Shared Library
 
@@ -38,28 +37,55 @@ To use the shared library in your Jenkins pipeline, add the following configurat
 
 ## Jenkins Pipelines
 
-**App_Pipeline**: Pipeline responsible for building, testing, and deploying the application.
+**App_Pipeline**: Pipeline responsible for building, testing, and deploying the `Django Application` image.
 - Checkout SCM Stage
+- Dependencies check Stage
 - Linter Stage
 - SAST Stage
 - App Unit Testing Stage
-- Build Image & Scanning
+- Build Image 
+- Scanning Image
 - Login & Push Image
-- Deployment Stage
+- ArgoCD Sync 
+- Notify pipline status
 - Post Actions & cleanup Stage
 
-**Remove_Deployment**: Pipeline responsible for tearing down or removing the deployment from the environment.
+**DB_Pipeline**: Pipeline responsible for building, testing, and deploying the `MYSQL Database` image. 
+- This Pipline is show case for using **`Hashicorp Vault secret management`** tool. 
+  - Checkout SCM Stage
+  - Build Image 
+  - Scanning Image
+  - Login & Push Image
+  - Notify pipline status
+  - Post Actions & cleanup Stage
+
+**CD_Deployment**: Pipeline responsible for deploy our application on Local Cluster `Minikube`, Cloud Cluster `EKS AWS` and Docker-compose.
 - Checkout SCM Stag
-- Remove Deployment Stage
+- Test SSH Access VMs
+- Deployment on Minikube VM 1
+- Deployment on Docker VM 2
+- Deployment on AWS
+- Notify pipline status
 - Post Actions & cleanup Stage
 
-**Infra_Pipeline**: It is responsible for both **applying** and **destroying** infrastructure resources by using **Build with Parameters** action: (apply or destroy)
+**Infra_Pipeline**/**Terraform**: It is responsible for both **applying** and **destroying** `AWS Cloud infrastructure` resources by using **Build with Parameters** action: (apply or destroy)
 - Checkout SCM Stage
 - IaS Scanning
 - Initialize Terraform Stage
 - Terraform Validate Stage
 - Terraform Plan Stage
 - Terraform Apply/Destroy Stage
+- Notify pipline status
+- Post Actions & cleanup Stage
+
+**Infra_Pipeline**/**Ansible**: It is responsible for creating `On Primise infrastructure` resources and install requeired dependences.
+- This Pipline is show case for using **`Ansible`** tool. 
+- Checkout SCM Stage
+- Environment Check
+- Test: Ping Machines
+- TInstall Minikube & Kubernetes on Machine 1
+- Install Docker on Machine 2
+- Notify pipline status
 - Post Actions & cleanup Stage
 
 ## Setup WebHook
@@ -84,94 +110,18 @@ To use the shared library in your Jenkins pipeline, add the following configurat
 
 
 
-
-## Overview
-
-The Jenkins pipeline executes Ansible playbooks on multiple machines, leveraging dynamic parameters for inventory files, credentials, and playbook paths. Key features include:
-
-- **Environment Validation**: Ensures Ansible is installed and correctly configured.
-- **Parameterized Configuration**: Flexible inputs for inventory files, credentials, and playbooks.
-- **Error Handling**: Built-in mechanisms to handle failures gracefully.
-- **Logging**: Clear and detailed logs for debugging and auditing.
-- **Post-Build Actions**: Automatic workspace cleanup and status notifications.
-
----
-
 ## Pipeline Stages
 
 1. **Environment Check**
    - Validates the Ansible installation and its version.
    - Ensures the execution environment is ready.
 
-2. **Run Ansible Playbook for Machine 1**
-   - Executes the specified Ansible playbook on Machine 1 using the provided inventory file and credentials.
-
-3. **Run Ansible Playbook for Machine 2**
-   - Executes the specified Ansible playbook on Machine 2 using the provided inventory file and credentials.
+2. **Parameterized Configuration**
+   - Flexible inputs for inventory files, credentials, and playbooks.
 
 4. **Post-Build Actions**
    - **Always**: Cleans up the workspace to maintain a clean build environment.
-   - **On Success**: Logs a success message.
-   - **On Failure**: Logs an error message.
+   - **On Success**: Send Email with success message.
+   - **On Failure**: Send Email with error message.
 
 ---
-
-## Prerequisites
-
-Before running this pipeline, ensure the following:
-
-1. **Jenkins Configuration**:
-   - Install the **Ansible plugin** for Jenkins.
-   - Configure the Ansible installation in Jenkins settings.
-   - Add credentials for the target machines in Jenkins credentials store.
-
-2. **Target Machines**:
-   - Ensure target machines are accessible via SSH.
-   - Verify the Ansible Control Node can connect to the target machines.
-
-3. **Project Structure**:
-   - `Ansible/` directory contains:
-     - Playbooks (`Playbooks/`)
-     - Inventory files (`Inventory/`)
-   - Inventory and playbook paths match the expected structure.
-
----
-
-## Usage Instructions
-
-1. **Configure Jenkins Parameters**:
-   - **PLAYBOOK**: Path to the Ansible playbook (e.g., `Playbooks/ping_check.yml`).
-   - **INVENTORY_FILE1**: Path to the first inventory file (e.g., `Inventory/inventory.ini`).
-   - **INVENTORY_FILE2**: Path to the second inventory file (e.g., `Inventory/inventory_2.ini`).
-   - **CREDENTIALS_ID_1**: Jenkins credentials ID for Machine 1.
-   - **CREDENTIALS_ID_2**: Jenkins credentials ID for Machine 2.
-
-2. **Run the Pipeline**:
-   - Trigger the pipeline from Jenkins, providing the required parameters.
-
-3. **Monitor Execution**:
-   - View logs in the Jenkins console to track progress and debug any issues.
-
----
-
-## Example Parameters
-
-| Parameter         | Value                        | Description                                  |
-|-------------------|------------------------------|----------------------------------------------|
-| `PLAYBOOK`        | `Playbooks/ping_check.yml`   | Path to the Ansible playbook.               |
-| `INVENTORY_FILE1` | `Inventory/inventory.ini`    | Path to the inventory file for Machine 1.   |
-| `INVENTORY_FILE2` | `Inventory/inventory_2.ini`  | Path to the inventory file for Machine 2.   |
-| `CREDENTIALS_ID_1`| `Ansible_Target_Machine_M1`  | Jenkins credentials ID for Machine 1.       |
-| `CREDENTIALS_ID_2`| `Ansible_Target_Machine_M2`  | Jenkins credentials ID for Machine 2.       |
-
----
-
-## Project Structure
-
-```plaintext
-Ansible/
-├── Inventory/
-│   ├── inventory.ini
-│   ├── inventory_2.ini
-├── Playbooks/
-│   ├── ping_check.yml

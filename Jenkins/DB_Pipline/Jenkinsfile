@@ -53,10 +53,10 @@ pipeline {
             cleanWs()
         }
         success {
-            echo "Pipeline was successful!"
+            notifyGmail(to: 'm.labibebidallah@nu.edu.eg',isSuccess: true)   
         }
         failure {
-            echo "Pipeline failed!"
+            notifyGmail(to: 'm.labibebidallah@nu.edu.eg',isSuccess: false)
         }
     }
 }

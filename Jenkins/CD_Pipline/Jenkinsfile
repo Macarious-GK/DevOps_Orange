@@ -8,11 +8,16 @@ pipeline {
         
     }
     stages {
-        stage('Test SSH Access VM 1') {
+        stage('Test SSH Access VMs') {
             steps {
                 script {
+                    echo "Testing SSH access to Minikube VM 1"
                     sshagent([SSH_CREDENTIALS_ID]) {
                         sh "ssh -o StrictHostKeyChecking=no vagrant@${MINIKUBE_HOST} 'hostname'"
+                    }
+                    echo "Testing SSH access to Minikube VM 2"
+                    sshagent([SSH_CREDENTIALS_ID2]) {
+                        sh "ssh -o StrictHostKeyChecking=no vagrant@${MINIKUBE_HOST2} 'hostname'"
                     }
                 }
             }
@@ -55,15 +60,6 @@ pipeline {
                                 '
                             """
                         }   
-                    }
-                }
-            }
-        }
-        stage('Test SSH Access Machine 2') {
-            steps {
-                script {
-                    sshagent([SSH_CREDENTIALS_ID2]) {
-                        sh "ssh -o StrictHostKeyChecking=no vagrant@${MINIKUBE_HOST2} 'hostname'"
                     }
                 }
             }
