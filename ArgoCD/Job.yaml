@@ -1,0 +1,37 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: check-app-health
+  namespace: macarious
+spec:
+  schedule: "*/1 * * * *" # Runs every 1 minute
+  jobTemplate:
+    spec:
+      ttlSecondsAfterFinished: 30
+      template:
+        spec:
+          containers:
+          - name: health-check
+            image: macarious25siv/orange:health-checker # My custom Image with curl & kubectl pre-installed
+            command:
+            - /bin/sh
+            - -c
+            - |
+              set -e
+              # Check if the app is accepting requests
+              if ! curl -s --fail http://app-service.macarious.svc.cluster.local:80; then
+                echo "App is not responding. Deleting pods..."
+                kubectl delete pod -n macarious -l app=orangeapp
+                echo "Waiting for 40 seconds before rechecking..."
+                sleep 40
+                # Recheck the app
+                if curl -s --fail http://app-service.macarious.svc.cluster.local:80; then
+                  echo "App is now responding."
+                else
+                  echo "App is still not responding after restart."
+                fi
+              else
+                echo "App is healthy."
+              fi
+          restartPolicy: Never
+          serviceAccountName: default
