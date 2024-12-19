@@ -6,7 +6,7 @@ This guide explains how to deploy an application on Minikube using Kubernetes `k
 ## 0. Run Minikube on the Calico Container Network Interface (CNI)
 Calico is a popular CNI plugin for Kubernetes that provides networking and network policy capabilities
 ```bash
-minikube --cni calico
+minikube start --cni calico
 ```
 
 ## 1. Namespace Creation
