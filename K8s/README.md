@@ -3,6 +3,11 @@ This guide explains how to deploy an application on Minikube using Kubernetes `k
 
   ![K8s](/Figures/Kubernetes_logo.png)
 
+## 0. Run Minikube on the Calico Container Network Interface (CNI)
+Calico is a popular CNI plugin for Kubernetes that provides networking and network policy capabilities
+```bash
+minikube --cni calico
+```
 
 ## 1. Namespace Creation
 
@@ -34,19 +39,44 @@ For managing Database storage, we set up a Persistent Volume (PV) and a Persiste
     kubectl apply -f PVC.yaml
     ```
 
-## 3. Data Initialization with a Kubernetes Job
+## 3. Role and RoleBinding Configuration
 
-We use a Kubernetes Job to copy initial MYSQL data into the persistent storage. This job ensures that required data is available in the persistent volume before the application starts.
+To grant the necessary permissions for the `check-app-health` CronJob to perform actions like deleting pods, we configure a **Role** and a **RoleBinding**. These resources ensure the CronJob has restricted access to the required operations within the namespace.
 
-### Steps:
-1. Define a Job in your Kubernetes configuration that copies the data.
-2. Apply the configuration to run the job and initialize the data:
+### Definitions:
+- **Role**: Defines the set of permissions (e.g., read, write, delete) for resources within a specific namespace.
+- **RoleBinding**: Associates a Role with a user, group, or service account, granting them the defined permissions.
+- Apply the configurations to create the Role and RoleBinding:
 
     ```bash
-    kubectl apply -f Job.yaml
+    kubectl apply -f role.yaml
+    kubectl apply -f roleBinding.yaml
     ```
 
-## 4. Database Deployment & Exposing
+## 4. Monitoring Application Health with a Kubernetes CronJob
+
+We use a Kubernetes CronJob to ensure that the application is accepting requests. If the application becomes unresponsive, the CronJob automatically deletes the application pods and retries after a delay. This setup helps maintain the application's availability without manual intervention.
+
+### Steps:
+1. **Define the CronJob**  
+   Create a `check-app-health.yaml` file with the CronJob configuration. Ensure the CronJob performs the health check and handles unresponsive pods as required.
+
+2. **Apply the Configuration**  
+   Deploy the CronJob to your Kubernetes cluster using the following command:
+   ```bash
+   kubectl apply -f check-app-health.yaml
+
+## 5. Network Security for Database Pods
+To enhance security, we restrict the database pods (mysql) to accept ingress network traffic only from the application pods (orangeapp). This is achieved using a Kubernetes NetworkPolicy.
+
+- Define the NetworkPolicy:
+  - Create a mysql-network-policy.yaml file 
+- Apply the Configuration:
+  ```bash
+  kubectl apply -f mysql-network-policy.yaml
+  ```
+
+## 6. Database Deployment & Exposing
 
 Deploy the database using a Kubernetes Deployment. The Deployment manages the lifecycle of the database, ensuring the correct number of replicas are running and that it uses the Persistent Volume Claim (PVC) for storage. The database will be exposed via a ClusterIP service to allow access within the cluster.
 
@@ -58,7 +88,7 @@ Deploy the database using a Kubernetes Deployment. The Deployment manages the li
     kubectl apply -f Database.yaml
     ```
 
-## 5. Application Deployment & Exposing
+## 7. Application Deployment & Exposing
 
 Deploy the application using a Kubernetes Deployment. To make the application accessible externally, create a Kubernetes Service of type NodePort. This service routes external traffic to the application's pods through a specific port (in this case, `port: 30036`) on each node in the cluster. Also, We are using secrets for SECRET_KEY in Djnago application.
 
@@ -71,7 +101,7 @@ Deploy the application using a Kubernetes Deployment. To make the application ac
     kubectl apply -f Application.yaml
     ```
 
-## 6. Verify Deployment
+## 8. Verify Deployment
 
 After applying the configurations, you can check the status of your resources to ensure everything is set up correctly:
 
@@ -87,7 +117,7 @@ echo "Checking pods..."
 kubectl get pods -n macarious
 ```
 
-## 7. Accessing the Application
+## 9. Accessing the Application
 - You will be aple to access the application using the `NodePort` defined in the Service (e.g., `http://<NodeIP>:30036`).
 
 - By following these steps, you will successfully deploy your application on Minikube using Kubernetes. The namespace, persistent storage, database, and application will be properly configured and accessible.

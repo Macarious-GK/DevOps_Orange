@@ -1,5 +1,7 @@
 # Vault  
-A small and simple guide for setting up HashiCorp Vault in **Development** and **Production** modes.
+- **`Vault`** plays a critical role in **`DevSecOps`** by securely managing and dynamically providing sensitive data such as secrets, API keys, and encryption keys, ensuring secure access.
+- **`Vault`** minimizes the risk of unauthorized exposure across the software development lifecycle.
+- A small and simple guide for setting up **`HashiCorp Vault`** in **Development** and **Production** modes.
 
 ![Vault Logo](/Figures/vault_logo.png)
 

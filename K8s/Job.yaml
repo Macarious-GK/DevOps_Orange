@@ -1,20 +1,37 @@
 apiVersion: batch/v1
-kind: Job
+kind: CronJob
 metadata:
-  name: copy-db-job
+  name: check-app-health
   namespace: macarious
 spec:
-  template:
+  schedule: "*/1 * * * *" # Runs every 1 minute
+  jobTemplate:
     spec:
-      containers:
-      - name: copy-db
-        image: macarious25siv/orange:mysql  # Use the MySQL image or a custom image with MySQL client tools
-        command: ['sh', '-c', 'cp -r /var/lib/mysql/* /mnt/data/mysql/']
-        volumeMounts:
-        - name: mysql-storage
-          mountPath: /mnt/data/mysql  # Mount the persistent volume to this location
-      restartPolicy: OnFailure
-      volumes:
-      - name: mysql-storage
-        persistentVolumeClaim:
-          claimName: mysql-pvc  # Replace with the actual PVC name
+      ttlSecondsAfterFinished: 30
+      template:
+        spec:
+          containers:
+          - name: health-check
+            image: macarious25siv/orange:health-checker # My custom Image with curl & kubectl pre-installed
+            command:
+            - /bin/sh
+            - -c
+            - |
+              set -e
+              # Check if the app is accepting requests
+              if ! curl -s --fail http://app-service.macarious.svc.cluster.local:80; then
+                echo "App is not responding. Deleting pods..."
+                kubectl delete pod -n macarious -l app=orangeapp
+                echo "Waiting for 40 seconds before rechecking..."
+                sleep 40
+                # Recheck the app
+                if curl -s --fail http://app-service.macarious.svc.cluster.local:80; then
+                  echo "App is now responding."
+                else
+                  echo "App is still not responding after restart."
+                fi
+              else
+                echo "App is healthy."
+              fi
+          restartPolicy: Never
+          serviceAccountName: default

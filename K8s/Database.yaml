@@ -27,7 +27,6 @@ spec:
           claimName: mysql-pvc
         
 ---
-# MySQL Service
 apiVersion: v1
 kind: Service
 metadata:
