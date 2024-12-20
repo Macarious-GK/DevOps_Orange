@@ -99,7 +99,7 @@ pipeline {
             steps{
                 script{
                     echo "Syncing ArgoCD"
-                    argoCD_Sync()
+                    argoCDSync()
                       
                 }
             }
