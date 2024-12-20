@@ -65,7 +65,7 @@ Throughout all the pipelines, I maintained best practices in writing the stages.
   - Notify pipline status
   - Post Actions & cleanup Stage
 ---
-  ![Prometheus](/Figures/Promethues_working.png)
+  ![Prometheus](/Figures/DB_Pipline.PNG)
 ---
 **CD_Deployment**: Pipeline responsible for deploy our application on Local Cluster `Minikube`, Cloud Cluster `EKS AWS` and Docker-compose.
 - Checkout SCM Stag
@@ -78,6 +78,18 @@ Throughout all the pipelines, I maintained best practices in writing the stages.
 ---
   ![Prometheus](/Figures/CD_pipeline.png)
 ---
+**Infra_Pipeline**/**Ansible**: It is responsible for creating `On Primise infrastructure` resources and install requeired dependences.
+- This Pipline is show case for using **`Ansible`** tool. 
+- Checkout SCM Stage
+- Environment Check
+- Test: Ping Machines
+- TInstall Minikube & Kubernetes on Machine 1
+- Install Docker on Machine 2
+- Notify pipline status
+- Post Actions & cleanup Stage
+---
+  ![Prometheus](/Figures/Infra_ansible_pipline.PNG)
+---
 **Infra_Pipeline**/**Terraform**: It is responsible for both **applying** and **destroying** `AWS Cloud infrastructure` resources by using **Build with Parameters** action: (apply or destroy)
 - Checkout SCM Stage
 - IaS Scanning
@@ -89,18 +101,6 @@ Throughout all the pipelines, I maintained best practices in writing the stages.
 - Post Actions & cleanup Stage
 ---
   ![Prometheus](/Figures/Infra_terra_pipline.PNG)
----
-**Infra_Pipeline**/**Ansible**: It is responsible for creating `On Primise infrastructure` resources and install requeired dependences.
-- This Pipline is show case for using **`Ansible`** tool. 
-- Checkout SCM Stage
-- Environment Check
-- Test: Ping Machines
-- TInstall Minikube & Kubernetes on Machine 1
-- Install Docker on Machine 2
-- Notify pipline status
-- Post Actions & cleanup Stage
----
-  ![Prometheus](/Figures/Promethues_working.png)
 ---
 ## Plugin Installation
 
@@ -133,5 +133,3 @@ Throughout all the pipelines, I maintained best practices in writing the stages.
 3. Trigger pipelines through Jenkins UI or set automated SCM-based triggers.
 
 
-
----
