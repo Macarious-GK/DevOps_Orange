@@ -53,7 +53,7 @@ pipeline {
                 // App Feature Testing: Unit Testing For Django APP
                 script {
                     dir('APP') {
-                        unitTestDjango_V2()
+                        unitTestDjango()
                         echo "Unit Testing is disabled for now"
                     }   
                 }
