@@ -2,6 +2,10 @@
 pipeline {
     agent any
 
+    parameters {
+        string(name: 'APP_IMAGE', defaultValue: 'macarious25siv/orange:appK8s', description: 'App Docker Image Name')
+    }
+
     stages {
         stage('Checkout SCM stage') {
             steps {
@@ -17,8 +21,7 @@ pipeline {
                 // Install the required dependencies
                 script {
                     dir('APP') {
-                        // installDjangoDependencies()
-                        echo "Django Dependencies are already installed"
+                        installDjangoDependencies()
                     }
                 }
             }
@@ -29,8 +32,7 @@ pipeline {
                 // Run Flake8, save the output to a report, and check for fatal errors (e.g., syntax errors)
                 script {
                     dir('APP'){
-                        // runFlake8Linting()   
-                        echo "Flake8 Linting is disabled for now"
+                        runFlake8Linting()   
                     }                 
                 }
             }
@@ -41,8 +43,7 @@ pipeline {
                 // Run Bandit as SAST Stage to check vulnerabilities Staticly
                 script {
                     dir('APP'){
-                    // sastBanditCheck_V2()
-                    echo "Bandit Check is disabled for now"
+                    sastBanditCheck_V2()
                     }
                 }
             }
@@ -66,7 +67,7 @@ pipeline {
                     // Build the Docker image
                     dir('APP/') {
                         echo "Building the Docker image..."
-                        // buildDockerImage("${params.APP_IMAGE}")
+                        buildDockerImage("${params.APP_IMAGE}")
                     }       
                 }
             }
@@ -75,12 +76,11 @@ pipeline {
         stage('Scan Image') {
             steps {
                 script {
-                    // Test the Docker image with Snyk or Trivy
+                    // Test the Docker image with  Trivy
                     dir('APP/') {
                         echo "Scanning the Docker image for vulnerabilities..."
-                        // trivyScanningReport(imageName:"${params.APP_IMAGE}")
-                        // snykLogin('Snyk_Token_ID')
-                        // snykTestDockerImage(imageName:'macarious25siv/books:latest')
+                        trivyScanningReport(imageName:"${params.APP_IMAGE}")
+
                     }
                 }
             }
@@ -91,8 +91,8 @@ pipeline {
                 script {
                     // Login to Docker Hub using stored credentials, Then Push Image
                     echo "Pushing the Docker image to Docker Hub..."
-                    // dockerHubLogin('Docker_Creds')
-                    // pushDockerImage("${params.APP_IMAGE}")
+                    dockerHubLogin('Docker_Creds')
+                    pushDockerImage("${params.APP_IMAGE}")
                 }
             }
         }
@@ -100,7 +100,7 @@ pipeline {
             steps{
                 script{
                     echo "Syncing ArgoCD"
-                    // argoCD_Sync()
+                    argoCD_Sync()
                       
                 }
             }
