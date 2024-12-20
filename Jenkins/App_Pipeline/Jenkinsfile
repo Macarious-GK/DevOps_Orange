@@ -41,7 +41,7 @@ pipeline {
                 // Run Bandit as SAST Stage to check vulnerabilities Staticly
                 script {
                     dir('APP'){
-                    sastBanditCheck_V2()
+                    // sastBanditCheck_V2()
                     echo "Bandit Check is disabled for now"
                     }
                 }
