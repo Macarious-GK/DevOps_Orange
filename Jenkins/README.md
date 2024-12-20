@@ -6,8 +6,8 @@
 1. [Jenkins Folder Structure](#jenkins-folder-structure)
 2. [Jenkins Shared Library](#jenkins-shared-library)
 3. [Pipelines Overview](#pipelines-overview)
-4. [Jenkins Pipelines](#jenkins-pipelines)
-5. [Plugin Installation & Configuration](#plugin-installation-configuration)
+4. [Jenkins Pipelines](#pipelines)
+5. [Plugin Installation and Configuration](#plugin-installation-and-configuration)
 6. [Setup WebHook](#setup-webhook)
 
 
@@ -36,7 +36,7 @@ To use the shared library in your Jenkins pipeline, add the following configurat
 ```
 
 
-## Pipelines Overvies
+## Pipelines Overview
 Throughout all the pipelines, I maintained best practices in writing the stages.
 
 1. **Reusable Code**
@@ -53,7 +53,7 @@ Throughout all the pipelines, I maintained best practices in writing the stages.
 ![email](/Figures/Successemail.png)
 
 
-## Jenkins Pipelines
+## Pipelines
 ---
 ![Pipeline](/Figures/CI_pipeline.png)
 
@@ -116,7 +116,7 @@ Throughout all the pipelines, I maintained best practices in writing the stages.
 - Post Actions & cleanup 
 
 
-## Plugin Installation & Configuration
+## Plugin Installation and Configuration
 
 ### Required Plugins
 1. **AWS Credentials Plugin**: For managing AWS credentials in Jenkins.
