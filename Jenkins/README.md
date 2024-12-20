@@ -2,27 +2,6 @@
 
 This repository contains Jenkins pipelines for different parts of the application and infrastructure management process. The pipelines utilize a shared library from the following repository: [Jenkins Shared Library](https://github.com/Macarious-GK/Jenkins-Shared-Library.git).
 
-## SSDLC Integration
-- The Jenkins pipelines incorporate SSDLC principles by applying the "shift-left" approach, which integrates security testing early in the development lifecycle. This proactive method helps address vulnerabilities before they reach production. 
-- Key security measures include code linting, static application security testing, and Docker image scanning
-## Credential Management
-- **Credentials Storage**: Use Jenkins’ credentials management to securely store sensitive information like API keys and passwords.
-- **Environment Variables**: Access credentials via environment variables configured in Jenkins.
-
-## Security Authorization
-- **Mixed Security Authorization**: Segment access permissions based on roles and responsibilities.
-- **Least Privilege Principle**: Ensure users and services have only the permissions needed for their tasks.
-
-## Plugin Installation
-
-### Required Plugins
-1. **AWS Credentials Plugin**: For managing AWS credentials in Jenkins.
-2. **GitHub Plugin**: For integrating Jenkins with GitHub repositories.
-
-#### Install Plugins
-1. Go to **Manage Jenkins** -> **Manage Plugins**.
-2. Select the plugins and click **Install without Restart**.
-
 ## Jenkins Shared Library
 
 The pipelines in this repository make use of a shared library to promote reusable and modular pipeline steps. The shared library is hosted in the following GitHub repository: [Jenkins Shared Library](https://github.com/Macarious-GK/Jenkins-Shared-Library.git).
@@ -33,7 +12,32 @@ To use the shared library in your Jenkins pipeline, add the following configurat
 @Library('Jenkins-Shared-Library') _
 // Pipeline Code
 ```
+## Jenkins Folder Structure
+```plaintext
+Jenkins/
+|── App_Pipeline/
+|── DB_Pipeline/
+|── CD_Pipline/
+|── Infra_Pipeline/
+|   ├── Ansible/
+|   └── Terraform/
+└── Readme.md
+```
 
+
+## Pipeline Stages
+Throughout all the pipelines, I maintained best practices in writing the stages.
+
+1. **Reusable Code**
+   - Utilized shared library functions effectively.
+
+2. **Parameterized Configuration**
+   - Enabled flexible inputs for inventory files, credentials, and playbooks.
+
+3. **Post-Build Actions**
+   - **Always**: Cleans up the workspace to maintain a clean build environment.
+   - **On Success**: Sends an email with a success message.
+   - **On Failure**: Sends an email with an error message.
 
 ## Jenkins Pipelines
 
@@ -49,7 +53,9 @@ To use the shared library in your Jenkins pipeline, add the following configurat
 - ArgoCD Sync 
 - Notify pipline status
 - Post Actions & cleanup Stage
-
+---
+  ![Prometheus](/Figures/Promethues_working.png)
+---
 **DB_Pipeline**: Pipeline responsible for building, testing, and deploying the `MYSQL Database` image. 
 - This Pipline is show case for using **`Hashicorp Vault secret management`** tool. 
   - Checkout SCM Stage
@@ -58,7 +64,9 @@ To use the shared library in your Jenkins pipeline, add the following configurat
   - Login & Push Image
   - Notify pipline status
   - Post Actions & cleanup Stage
-
+---
+  ![Prometheus](/Figures/Promethues_working.png)
+---
 **CD_Deployment**: Pipeline responsible for deploy our application on Local Cluster `Minikube`, Cloud Cluster `EKS AWS` and Docker-compose.
 - Checkout SCM Stag
 - Test SSH Access VMs
@@ -67,7 +75,9 @@ To use the shared library in your Jenkins pipeline, add the following configurat
 - Deployment on AWS
 - Notify pipline status
 - Post Actions & cleanup Stage
-
+---
+  ![Prometheus](/Figures/CD_pipeline.png)
+---
 **Infra_Pipeline**/**Terraform**: It is responsible for both **applying** and **destroying** `AWS Cloud infrastructure` resources by using **Build with Parameters** action: (apply or destroy)
 - Checkout SCM Stage
 - IaS Scanning
@@ -77,7 +87,9 @@ To use the shared library in your Jenkins pipeline, add the following configurat
 - Terraform Apply/Destroy Stage
 - Notify pipline status
 - Post Actions & cleanup Stage
-
+---
+  ![Prometheus](/Figures/Infra_terra_pipline.PNG)
+---
 **Infra_Pipeline**/**Ansible**: It is responsible for creating `On Primise infrastructure` resources and install requeired dependences.
 - This Pipline is show case for using **`Ansible`** tool. 
 - Checkout SCM Stage
@@ -87,7 +99,21 @@ To use the shared library in your Jenkins pipeline, add the following configurat
 - Install Docker on Machine 2
 - Notify pipline status
 - Post Actions & cleanup Stage
+---
+  ![Prometheus](/Figures/Promethues_working.png)
+---
+## Plugin Installation
 
+### Required Plugins
+1. **AWS Credentials Plugin**: For managing AWS credentials in Jenkins.
+2. **GitHub Plugin**: For integrating Jenkins with GitHub repositories.
+3. **Ansible Plugin**: For executing Ansible playbooks directly from Jenkins.
+4. **SSH Agent Plugin**: For securely managing SSH keys within Jenkins pipelines.
+5. **Mailer Plugin**: For configuring and sending email notifications from Jenkins.
+
+#### Install Plugins
+1. Go to **Manage Jenkins** -> **Manage Plugins**.
+2. Select the plugins and click **Install without Restart**.
 ## Setup WebHook
 
 ### Configure WebHook in GitHub:
@@ -107,21 +133,5 @@ To use the shared library in your Jenkins pipeline, add the following configurat
 3. Trigger pipelines through Jenkins UI or set automated SCM-based triggers.
 
 
-
-
-
-## Pipeline Stages
-
-1. **Environment Check**
-   - Validates the Ansible installation and its version.
-   - Ensures the execution environment is ready.
-
-2. **Parameterized Configuration**
-   - Flexible inputs for inventory files, credentials, and playbooks.
-
-4. **Post-Build Actions**
-   - **Always**: Cleans up the workspace to maintain a clean build environment.
-   - **On Success**: Send Email with success message.
-   - **On Failure**: Send Email with error message.
 
 ---

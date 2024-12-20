@@ -2,19 +2,6 @@
 pipeline {
     agent any
 
-    environment {
-        MINIKUBE_HOST = "192.168.1.201"
-        ANSIBLE_VERSION = 'Default_Ansible'   // Ansible installation name
-    }
-
-    parameters {
-        string(name: 'APP_IMAGE', defaultValue: 'macarious25siv/orange:appK8s', description: 'App Docker Image Name')
-        string(name: 'INVENTORY_FILE1', defaultValue: 'Inventory/inventory.ini', description: 'Path to the first inventory file')
-        string(name: 'INVENTORY_FILE2', defaultValue: 'Inventory/inventory_2.ini', description: 'Path to the second inventory file')
-        credentials(name: 'CREDENTIALS_ID_1', description: 'Credentials ID for Machine 1', defaultValue: 'Ansible_Target_Machine_M1')
-        credentials(name: 'CREDENTIALS_ID_2', description: 'Credentials ID for Machine 2', defaultValue: 'Ansible_Target_Machine_M2')
-    }
-
     stages {
         stage('Checkout SCM stage') {
             steps {
