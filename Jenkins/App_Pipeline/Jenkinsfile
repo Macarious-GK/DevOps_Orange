@@ -21,7 +21,7 @@ pipeline {
                 // Install the required dependencies
                 script {
                     dir('APP') {
-                        // installDjangoDependencies()
+                        installDjangoDependencies()
                     }
                 }
             }
@@ -32,7 +32,7 @@ pipeline {
                 // Run Flake8, save the output to a report, and check for fatal errors (e.g., syntax errors)
                 script {
                     dir('APP'){
-                        // runFlake8Linting()   
+                        runFlake8Linting()   
                     }                 
                 }
             }
@@ -55,7 +55,6 @@ pipeline {
                 script {
                     dir('APP') {
                         unitTestDjango()
-                        echo "Unit Testing is disabled for now"
                     }   
                 }
             }
