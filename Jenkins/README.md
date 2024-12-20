@@ -54,6 +54,8 @@ Throughout all the pipelines, I maintained best practices in writing the stages.
 
 
 ## Jenkins Pipelines
+---
+![Pipeline](/Figures/CI_pipeline.png)
 
 **App_Pipeline**: Pipeline responsible for building, testing, and deploying the `Django Application` image.
 - Checkout SCM Stage
@@ -68,8 +70,8 @@ Throughout all the pipelines, I maintained best practices in writing the stages.
 - Notify pipline status
 - Post Actions & cleanup Stage
 ---
-  ![Pipeline](/Figures/CI_pipeline.png)
 
+![Pipeline](/Figures/DB_Pipline.PNG)
 **DB_Pipeline**: Pipeline responsible for building, testing, and deploying the `MYSQL Database` image. 
 - This Pipline is show case for using **`Hashicorp Vault secret management`** tool. 
   - Checkout SCM Stage
@@ -78,9 +80,9 @@ Throughout all the pipelines, I maintained best practices in writing the stages.
   - Login & Push Image
   - Notify pipline status
   - Post Actions & cleanup Stage
----
-  ![Pipeline](/Figures/DB_Pipline.PNG)
 
+---
+  ![Pipeline](/Figures/CD_pipeline.png)
 **CD_Deployment**: Pipeline responsible for deploy our application on Local Cluster `Minikube`, Cloud Cluster `EKS AWS` and Docker-compose.
 - Checkout SCM Stag
 - Test SSH Access VMs
@@ -90,7 +92,7 @@ Throughout all the pipelines, I maintained best practices in writing the stages.
 - Notify pipline status
 - Post Actions & cleanup Stage
 ---
-  ![Pipeline](/Figures/CD_pipeline.png)
+  ![Pipeline](/Figures/Infra_ansible_pipline.PNG)
 **Infra_Pipeline**/**Ansible**: It is responsible for creating `On Primise infrastructure` resources and install requeired dependences.
 - This Pipline is show case for using **`Ansible`** tool. 
 - Checkout SCM Stage
@@ -101,7 +103,8 @@ Throughout all the pipelines, I maintained best practices in writing the stages.
 - Notify pipline status
 - Post Actions & cleanup Stage
 ---
-  ![Pipeline](/Figures/Infra_ansible_pipline.PNG)
+![Pipeline](/Figures/Infra_terra_pipline.PNG)
+
 **Infra_Pipeline**/**Terraform**: It is responsible for both **applying** and **destroying** `AWS Cloud infrastructure` resources by using **Build with Parameters** action: (apply or destroy)
 - Checkout SCM Stage
 - IaS Scanning
@@ -111,8 +114,6 @@ Throughout all the pipelines, I maintained best practices in writing the stages.
 - Terraform Apply/Destroy Stage
 - Notify pipline status
 - Post Actions & cleanup 
----
-![Pipeline](/Figures/Infra_terra_pipline.PNG)
 
 
 ## Plugin Installation & Configuration
