@@ -42,8 +42,13 @@ pipeline {
                                     echo "Applying pvc.yaml...";
                                     kubectl apply -f PVC.yaml
 
+                                    echo "Applying role.yaml and rolebinding.yaml...";
+                                    kubectl apply -f role.yaml
+                                    kubectl apply -f rolebinding.yaml
+
                                     echo "Applying job.yaml...";
                                     kubectl apply -f Job.yaml
+
 
                                     echo "Applying Database.yaml...";
                                     kubectl apply -f Database.yaml

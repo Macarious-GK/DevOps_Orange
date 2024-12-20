@@ -99,8 +99,7 @@ pipeline {
             steps{
                 script{
                     echo "Syncing ArgoCD"
-                    argoCDSync()
-                      
+                    argoCDSync(server:'localhost:8080', argocd_creds:'argocd_creds', appName:'orange-argo-application')                      
                 }
             }
         }

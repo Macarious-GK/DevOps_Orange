@@ -9,10 +9,10 @@ Vagrant.configure("2") do |config|
 
   
       control.vm.provider "virtualbox" do |vb|
-        vb.name = "Ansible_Control_VM"     # Set the name of the VM
+        vb.name = "Jenkins&Ansible_Control_VM"     # Set the name of the VM
         vb.gui = false                     # Disable GUI mode
-        vb.memory = "1024"                 # Memory allocation (optional)
-        vb.cpus = 1                        # Number of CPU cores (optional)
+        vb.memory = "4096"                 # Memory allocation (optional)
+        vb.cpus = 3                        # Number of CPU cores (optional)
       end
   
       # Provisioning the control node with Ansible
