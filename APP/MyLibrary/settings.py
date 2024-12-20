@@ -106,12 +106,7 @@ WSGI_APPLICATION = 'MyLibrary.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db' /'db.sqlite3',
-    }
-}
+
 
 DATABASES = {   
     'default': {   
@@ -123,6 +118,14 @@ DATABASES = {
         'PORT': '3306',          
     }   
 } 
+import sys
+if 'test' in sys.argv:  # This will check if the 'test' command is being run
+    DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db' /'db.sqlite3',
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
