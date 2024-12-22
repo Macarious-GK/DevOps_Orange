@@ -1,5 +1,5 @@
 
-# DevOps Monitoring with Grafana, Prometheus, and Exporters
+# 👀 DevOps Monitoring with Grafana, Prometheus, and Exporters
 
 This project sets up a monitoring solution using **Grafana** and **Prometheus**  to monitor my Django applications.
 
